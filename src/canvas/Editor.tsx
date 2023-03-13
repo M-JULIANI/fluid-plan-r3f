@@ -1,15 +1,20 @@
-import GuideCube from "components/GuideCube";
-import { useState } from "react";
-import SidebarMenu from "./SidebarMenu";
-
+import GuideCube from '../components/GuideCube';
+import { useState } from 'react';
+import SidebarMenu from './SidebarMenu';
+import { ProgramTree } from '../../src/mock/ProgramTree';
+import { makeNode } from '../schema/make';
 export default function Editor() {
+    const programTree = ProgramTree;
+
+    const nodes = programTree.children.map(node => makeNode(node));
 
     const [cubes, updateCubes] = useState();
 
-    // const cube = GuideCube({name: 'Meeting Room', id: '', category: 'Meeting', index:0, zIndex:1 })
+    // const cube = GuideCube({ name: 'Meeting Room', id: '', category: 'Meeting', index: 0, zIndex: 1 })
 
     return (
         <>
+            {/* {cube} */}
             <SidebarMenu />
         </>
     )
