@@ -5,14 +5,20 @@ import * as THREE from "three";
 import "./styles.css";
 import React from 'react';
 import GuideCube from './components/GuideCube';
+import CanvasInteraction from 'canvas/CanvasInteraction';
+import SidebarMenu from 'canvas/SidebarMenu';
+import Editor from 'canvas/Editor';
 
 const Scene = () => {
     return (
         <>
-            <gridHelper />
-            <axesHelper />
+            {/* <gridHelper /> */}
+            {/* <axesHelper /> */}
             <pointLight intensity={1.0} position={[5, 3, 5]} />
-            <GuideCube />
+
+            <Editor />
+            {/* </AdminMenu> */}
+            {/* <GuideCube /> */}
         </>
     );
 };
@@ -31,12 +37,12 @@ const App = () => {
                     far: 1000,
                     zoom: 1,
                 }}
-                onCreated={({ gl }) => {
-                    gl.setClearColor("#252934");
-                }}
+            // onCreated={({ gl }) => {
+            //     gl.setClearColor("white");
+            // }}
             >
                 <Stats />
-                <OrbitControls />
+                <OrbitControls makeDefault />
                 <Suspense fallback={null}>
                     <Scene />
                 </Suspense>

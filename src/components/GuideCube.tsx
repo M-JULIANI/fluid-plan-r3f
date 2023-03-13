@@ -2,17 +2,17 @@ import React from 'react';
 import { useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
-
-export default function GuideCube() {
-    const cube = useRef<THREE.Mesh>(null);
-
-    useFrame((state, delta) => {
-        // cube.current!.rotation.x += 0.01;
-        // cube.current!.rotation.y += 0.01;
-        // cube.current?.rotateX(delta);
-
-        // state.camera.posi
-    });
+import { TransformControls } from '@react-three/drei';
+export type GuideCubeProps = {
+    id: string,
+    name: string,
+    category: string,
+    index?: number,
+    zIndex?: number,
+}
+export default function GuideCube(props: GuideCubeProps) {
+    const { name, category, index, id } = props;
+    const cube = useRef<THREE.Mesh>({} as THREE.Mesh);
 
     return (
         <>
@@ -20,6 +20,10 @@ export default function GuideCube() {
                 <boxBufferGeometry args={[1, 1, 1]} />
                 <meshStandardMaterial color="#0391BA" />
             </mesh>
+            {/* <TransformControls position-x={2} translationSnap={1}  */}
+            <TransformControls object={cube} mode="translate"
+                showY={false}
+                translationSnap={1} />
         </>
     );
 };
