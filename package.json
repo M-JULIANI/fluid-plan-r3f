@@ -19,6 +19,8 @@
   "license": "ISC",
   "dependencies": {
     "111": "^0.1.0",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "@mui/base": "^5.0.0-alpha.111",
     "@mui/icons-material": "5.8.4",
     "@mui/lab": "^5.0.0-alpha.113",

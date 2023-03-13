@@ -1,9 +1,8 @@
 import GuideCube from "components/GuideCube";
 import { useState } from "react";
-import CanvasInteraction from "./CanvasInteraction";
 import SidebarMenu from "./SidebarMenu";
 
-const Editor: React.FC = () => {
+export default function Editor() {
 
     const [cubes, updateCubes] = useState();
 
@@ -11,11 +10,8 @@ const Editor: React.FC = () => {
 
     return (
         <>
-            <CanvasInteraction />
             <SidebarMenu />
         </>
     )
 
 }
-
-export default Editor;

@@ -3,11 +3,8 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { Stats, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import "./styles.css";
-import React from 'react';
+import Editor from './canvas/Editor'
 import GuideCube from './components/GuideCube';
-import CanvasInteraction from 'canvas/CanvasInteraction';
-import SidebarMenu from 'canvas/SidebarMenu';
-import Editor from 'canvas/Editor';
 
 const Scene = () => {
     return (
@@ -15,10 +12,8 @@ const Scene = () => {
             {/* <gridHelper /> */}
             {/* <axesHelper /> */}
             <pointLight intensity={1.0} position={[5, 3, 5]} />
-
-            <Editor />
             {/* </AdminMenu> */}
-            {/* <GuideCube /> */}
+            <GuideCube id='' name='name' category='Meeting' index={0} zIndex={1} />
         </>
     );
 };
@@ -31,6 +26,7 @@ const App = () => {
                 width: "100vw",
             }}
         >
+            <Editor />
             <Canvas
                 camera={{
                     near: 0.1,

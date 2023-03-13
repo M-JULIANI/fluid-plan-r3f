@@ -8,9 +8,9 @@ type AssociatedSpaceProps = {
 
 type CanvasInteractionProps = Partial<GuideCubeProps> & AssociatedSpaceProps;
 
-const CanvasInteraction: React.FC = (props: CanvasInteractionProps) => {
+const CanvasInteraction: React.FC = () => {
 
-    const { width, height, category, name } = props;
+    //  const { width, height, category, name } = props;
     return null;
 }
 
