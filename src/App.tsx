@@ -4,7 +4,7 @@ import { Stats, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import "./styles.css";
 import Editor from './canvas/Editor'
-import GuideCube from './components/GuideCube';
+import GuideCube from './threeComponents/GuideCube';
 import { useRefineState, useUpdateState } from 'state/hooks';
 import { Node } from 'schema/types';
 
@@ -27,16 +27,7 @@ const Scene = () => {
     };
 
     const [state, updateState] = useState(cubeNode);
-
-    console.log('stateroo:')
-    console.log(state.props.position);
-
     const { camera } = useThree();
-
-    useFrame((state) => {
-        console.log(state.camera.position)
-    })
-
     useEffect(() => {
         camera.lookAt(0, 0, 0);
     }, [])
@@ -54,7 +45,7 @@ const Scene = () => {
 };
 
 const cameraSettings = {
-    zoom: 50,
+    zoom: 25,
     fov: 45,
     near: 0.1,
     far: 200,
@@ -75,7 +66,7 @@ const App = () => {
                 orthographic={true}
                 camera={cameraSettings}
             >
-                <Stats />
+                {/* <Stats /> */}
                 <OrbitControls makeDefault />
                 <Suspense fallback={null}>
                     <Scene />

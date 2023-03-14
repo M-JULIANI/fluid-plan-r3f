@@ -1,4 +1,4 @@
-import { Vec2 } from "geometry/Vec2";
+import { Vec2 } from "geometry/vec2";
 
 export interface NodeType<T extends string, P, C extends Node | void> {
     id: string;

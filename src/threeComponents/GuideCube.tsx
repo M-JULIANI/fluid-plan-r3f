@@ -6,6 +6,7 @@ import { TransformControls } from '@react-three/drei';
 import { Updater } from 'state/types';
 import { patch, $set } from '../state/ops';
 import { Node } from 'schema/types';
+import { Colors, ProgramCategory } from '../constants/colors';
 export type GuideCubeProps = {
     id: string,
     state: Node,
@@ -15,16 +16,13 @@ export type GuideCubeProps = {
 export default function GuideCube(props: GuideCubeProps) {
     const { id, state, updateState } = props;
     const cube = useRef<THREE.Mesh>({} as THREE.Mesh);
-    console.log('cube ref')
-    console.log(cube)
+    const color = Colors[state.props.category as ProgramCategory];
+    // console.log('cube ref')
+    // console.log(cube)
 
     const updateProps = useCallback(() => {
-        // const update = {
-        //     position: $set(cube.current.position)
-        // };
-        console.log('pos:')
-        console.log(cube.current.position);
-        // updateState(update);
+        // console.log('pos:')
+        // console.log(cube.current.position);
         const updatedPos = { x: cube.current.position.x, y: cube.current.position.y };
         updateState((state) => {
             return {
@@ -41,10 +39,11 @@ export default function GuideCube(props: GuideCubeProps) {
         <>
             <mesh ref={cube}>
                 <boxGeometry />
-                <meshStandardMaterial color="#0391BA" />
+                <meshStandardMaterial color={color} />
             </mesh>
             {/* <TransformControls position-x={2} translationSnap={1}  */}
             <TransformControls object={cube} mode="translate"
+                size={0.5}
                 showY={false}
                 translationSnap={1} onObjectChange={updateProps} />
         </>

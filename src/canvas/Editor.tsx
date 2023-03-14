@@ -1,4 +1,4 @@
-import GuideCube from '../components/GuideCube';
+import GuideCube from '../threeComponents/GuideCube';
 import { useState } from 'react';
 import SidebarMenu from './SidebarMenu';
 import { ProgramTree } from '../../src/mock/ProgramTree';
@@ -8,14 +8,14 @@ export default function Editor() {
 
     const nodes = programTree.children.map(node => makeNode(node));
 
-    const [cubes, updateCubes] = useState();
+    const [cubes, updateCubes] = useState(nodes);
 
     // const cube = GuideCube({ name: 'Meeting Room', id: '', category: 'Meeting', index: 0, zIndex: 1 })
 
     return (
         <>
             {/* {cube} */}
-            <SidebarMenu />
+            <SidebarMenu nodes={cubes} updateModel={updateCubes} />
         </>
     )
 

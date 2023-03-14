@@ -38,7 +38,7 @@ export const ProgramTree = {
             }
         },
         {
-            "id": "6054e670-0a17-425b-8557-54cef44a0830",
+            "id": "b8a083b3-6521-4690-84ef-97dccc018ba6",
             "props": {
                 "category": "core",
                 "name": "medium core",
