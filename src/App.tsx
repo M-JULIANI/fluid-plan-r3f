@@ -1,5 +1,5 @@
-import { Suspense, useRef, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Suspense, useEffect, useRef, useState } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Stats, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import "./styles.css";
@@ -21,7 +21,7 @@ const Scene = () => {
             "width": 2,
             "rotated": false,
             "zIndex": 6,
-            "position": [0, 10]
+            "position": [0, 0, 0]
         },
         "children": [1, 2]
     };
@@ -31,18 +31,36 @@ const Scene = () => {
     console.log('stateroo:')
     console.log(state.props.position);
 
+    const { camera } = useThree();
+
+    useFrame((state) => {
+        console.log(state.camera.position)
+    })
+
+    useEffect(() => {
+        camera.lookAt(0, 0, 0);
+    }, [])
 
 
     return (
         <>
             {/* <gridHelper /> */}
             {/* <axesHelper /> */}
-            <pointLight intensity={1.0} position={[5, 3, 5]} />
+            <pointLight intensity={1.0} position={[5, 20, 5]} />
             {/* </AdminMenu> */}
             <GuideCube id="bestCube" state={state} updateState={updateState} />
         </>
     );
 };
+
+const cameraSettings = {
+    zoom: 50,
+    fov: 45,
+    near: 0.1,
+    far: 200,
+    position: new THREE.Vector3(0, 100, 0)
+}
+
 
 const App = () => {
     return (
@@ -54,14 +72,8 @@ const App = () => {
         >
             <Editor />
             <Canvas
-                camera={{
-                    near: 0.1,
-                    far: 1000,
-                    zoom: 1,
-                }}
-            // onCreated={({ gl }) => {
-            //     gl.setClearColor("white");
-            // }}
+                orthographic={true}
+                camera={cameraSettings}
             >
                 <Stats />
                 <OrbitControls makeDefault />

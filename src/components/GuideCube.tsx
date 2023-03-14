@@ -40,7 +40,7 @@ export default function GuideCube(props: GuideCubeProps) {
     return (
         <>
             <mesh ref={cube}>
-                <boxBufferGeometry args={[1, 1, 1]} />
+                <boxGeometry />
                 <meshStandardMaterial color="#0391BA" />
             </mesh>
             {/* <TransformControls position-x={2} translationSnap={1}  */}
