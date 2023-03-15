@@ -67,7 +67,7 @@ const App = () => {
                 camera={cameraSettings}
             >
                 {/* <Stats /> */}
-                <OrbitControls makeDefault />
+                {/* <OrbitControls makeDefault /> */}
                 <Suspense fallback={null}>
                     <Scene />
                 </Suspense>

@@ -1,13 +1,4 @@
-
-export enum ProgramCategory {
-    Meeting = "meeting",
-    Office = "office",
-    Amenity = "amenity",
-    Core = "core",
-    Support = "support",
-    Event = "event"
-}
-
+import { ProgramCategory } from "./program";
 export type ColorByProgram = {
     [key in ProgramCategory]: string;
 };

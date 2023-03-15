@@ -16,9 +16,10 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import ProgramCard from '../components/ProgramCard';
 import { Node } from 'schema/types';
+import { Container } from '@mui/material';
 
 const minDrawerWidth = 240;
-const defaultWidth = 320;
+const defaultWidth = 420;
 
 type SidebarProps = {
     nodes: Node[],
@@ -32,7 +33,7 @@ export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
     console.log(nodes);
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Container sx={{ display: 'flex' }}>
             <CssBaseline />
             <Drawer
                 sx={{
@@ -50,7 +51,9 @@ export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
                 variant="permanent"
                 anchor="left"
             >
-                <Toolbar />
+                <div style={{ backgroundColor: '#EAEAEA' }}>
+                    <Toolbar><h3>Program Elements</h3></Toolbar>
+                </div>
                 <Divider />
 
 
@@ -60,10 +63,11 @@ export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
                         name={node.props.name}
                         length={node.props.length}
                         width={node.props.width}
-                        locked={node.props.locked} />
+                        locked={node.props.locked}
+                        selected={false} />
                 ))}
 
             </Drawer>
-        </Box>
+        </Container>
     );
 }
