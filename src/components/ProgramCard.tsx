@@ -62,6 +62,7 @@ const useStyles = makeStyles({
         minWidth: "100px",
         fontSize: 8,
         marginTop: '-16px',
+        marginLeft: '14px',
         verticalAlign: 'top',
         margin: "0px 0px 0px 8px",
     },
@@ -74,6 +75,7 @@ const useStyles = makeStyles({
 
     },
     menuItem: {
+        fontSize: 8,
         margin: "0px 0px 0px 8px",
         padding: "0px 0px 0px 8px",
     },
@@ -83,11 +85,14 @@ const useStyles = makeStyles({
         color: "black",
     },
     exitButtonPlacement: {
+        position: "relative",
         marginLeft: "325px",
         marginTop: "-12px",
-        horizontalAlign: "right",
+        // top: "-20px",
+        // right: "-20px",
     },
     lockedButtonPlacement: {
+        position: "relative",
         marginLeft: "333px",
         marginBottom: "-2px",
     }
@@ -123,9 +128,9 @@ export default function ProgramCard(props: ProgramCardProps) {
                     <div className={classes.exitButtonPlacement}>
                         <IconButton><Close /></IconButton>
                     </div>
-                    <Grid2 spacing={0} container columns={2}>
-                        <Grid2 xs={0}>
-                            <FormControl sx={{ m: 2 }} variant="standard" className={classes.paddedForm}>
+                    <Grid2 spacing={2} container columns={2}>
+                        <Grid2 xs={5}>
+                            <FormControl sx={{ m: 1 }} variant="standard" className={classes.paddedForm}>
                                 <InputLabel id="demo-customized-select-label" className={classes.label}>Program Category</InputLabel>
                                 <Select className={classes.label}
                                     labelId="demo-customized-select-label"
