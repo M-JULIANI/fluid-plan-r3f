@@ -23,12 +23,14 @@ import Paper from '@mui/material/Paper';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 
 type ProgramCardProps = {
+    id: string,
     category: string,
     name: string,
     length: number,
     width: number,
     locked: boolean,
-    selected: boolean
+    selected: boolean,
+    deleteNode: (key: string)=>void
 }
 const useStyles = makeStyles({
     container: {
@@ -100,7 +102,7 @@ const useStyles = makeStyles({
 
 export default function ProgramCard(props: ProgramCardProps) {
 
-    const { category, name, length, width, locked, selected } = props;
+    const {id, category, name, length, width, locked, selected, deleteNode} = props;
     const classes = useStyles();
     console.log('props at program card')
     console.log(props)
@@ -121,12 +123,16 @@ export default function ProgramCard(props: ProgramCardProps) {
         console.log(isSelected)
         setSelected(s => !s);
     }, [])
+
+    const handleDelete = useCallback(() => {
+            deleteNode(id)
+    }, []);
     return (
         <div style={{ padding: 10 }}>
             <Card sx={{ minWidth: 275 }} onMouseEnter={handleCardClick} onMouseLeave={handleCardClick} style={{ background: isSelected ? '#F2FBF7' : 'white' }}>
                 <CardContent >
                     <div className={classes.exitButtonPlacement}>
-                        <IconButton><Close /></IconButton>
+                        <IconButton onClick={handleDelete}><Close /></IconButton>
                     </div>
                     <Grid2 spacing={2} container columns={2}>
                         <Grid2 xs={5}>
@@ -140,8 +146,10 @@ export default function ProgramCard(props: ProgramCardProps) {
                                     <MenuItem className={classes.menuItem} value="">
                                         <em>None</em>
                                     </MenuItem>
-                                    {ProgramList.map(key => {
-                                        return < MenuItem className={classes.menuItem} value={key} > {key}</MenuItem>
+                                    {ProgramList.map((item, index) => {
+                                        return< MenuItem key={index} className={classes.menuItem} value={item} >
+                                             {item}
+                                             </MenuItem>
                                     })}
 
                                 </Select>

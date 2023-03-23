@@ -1,4 +1,6 @@
 export const ProgramTree = {
+    "id": "459efe73-fc11-4ee8-8014-e1b02685a1d8",
+    "props":{},
     "type": "flat",
     "children": [
         {
@@ -10,7 +12,8 @@ export const ProgramTree = {
                 "length": 3,
                 "width": 2,
                 "rotated": false,
-                "zIndex": 6
+                "zIndex": 6,
+                "position": [0, 0, 0]
             }
         },
         {
@@ -22,7 +25,8 @@ export const ProgramTree = {
                 "length": 5,
                 "width": 4,
                 "rotated": false,
-                "zIndex": 5
+                "zIndex": 5,
+                "position": [2, 0, 4]
             }
         },
         {
@@ -34,7 +38,8 @@ export const ProgramTree = {
                 "length": 8,
                 "width": 6,
                 "rotated": false,
-                "zIndex": 4
+                "zIndex": 4,
+                "position": [5, 0, 1]
             }
         },
         {
@@ -46,7 +51,8 @@ export const ProgramTree = {
                 "length": 5,
                 "width": 3,
                 "rotated": false,
-                "zIndex": 3
+                "zIndex": 3,
+                "position": [5, 0, 8]
             }
         },
         {
@@ -58,7 +64,8 @@ export const ProgramTree = {
                 "length": 5,
                 "width": 3,
                 "rotated": false,
-                "zIndex": 2
+                "zIndex": 2,
+                "position": [2, 0, 8]
             }
         },
         {
@@ -70,7 +77,8 @@ export const ProgramTree = {
                 "length": 5,
                 "width": 3,
                 "rotated": false,
-                "zIndex": 1
+                "zIndex": 1,
+                "position": [10, 0, 3]
             }
         },
         {
@@ -82,7 +90,8 @@ export const ProgramTree = {
                 "length": 6,
                 "width": 3,
                 "rotated": false,
-                "zIndex": 0
+                "zIndex": 0,
+                "position": [6, 0, 1]
             }
         },
         {
@@ -94,7 +103,8 @@ export const ProgramTree = {
                 "length": 6,
                 "width": 3,
                 "rotated": false,
-                "zIndex": 7
+                "zIndex": 7,
+                "position": [6, 0, 8]
             }
         }
     ]

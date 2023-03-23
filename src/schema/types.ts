@@ -8,3 +8,22 @@ export interface NodeType<T extends string, P, C extends Node | void> {
 }
 
 export type Node = NodeType<any, any, any>;
+export type Nodes = {
+    id: string;
+    nodes: Record<string, Node>;
+  };
+
+export interface HasId {
+    id: string;
+  }
+
+  export const emptyNode = (): Node => ({
+    id: '',
+    type: 'node',
+    props: {},
+    children: [],
+  });
+
+  export interface ChildrenMixin<T> {
+    children: T[];
+  }

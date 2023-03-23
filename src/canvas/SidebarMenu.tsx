@@ -16,21 +16,28 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import ProgramCard from '../components/ProgramCard';
 import { Node } from 'schema/types';
-import { Container } from '@mui/material';
+import { Container, keyframes } from '@mui/material';
+import { useCallback } from 'react';
 
 const minDrawerWidth = 240;
 const defaultWidth = 420;
 
 type SidebarProps = {
     nodes: Node[],
-    updateModel: Updater<Node>
+    updateNodes: Updater<Node[]>
 }
 
 export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
 
-    const { nodes } = props;
+    const { nodes, updateNodes } = props;
+
     console.log('nodes at sidebar')
     console.log(nodes);
+
+    const deleteNode = useCallback((id) => {
+        console.log('deleting node: ' + id)
+        updateNodes(nodes.filter(node=> node.id !== id))
+    }, []);
 
     return (
         <Container sx={{ display: 'flex' }}>
@@ -58,13 +65,16 @@ export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
 
 
                 {nodes.map((node: Node) => (
-                    <ProgramCard key={node.id}
+                    <ProgramCard 
+                        key={node.id}
+                        id={node.id}
                         category={node.props.category}
                         name={node.props.name}
                         length={node.props.length}
                         width={node.props.width}
                         locked={node.props.locked}
-                        selected={false} />
+                        selected={false} 
+                        deleteNode={deleteNode}/>
                 ))}
 
             </Drawer>

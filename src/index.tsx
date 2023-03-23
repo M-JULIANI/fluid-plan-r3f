@@ -1,7 +1,8 @@
+import { createRoot } from '@react-three/fiber';
 import React from 'react';
 import { render } from 'react-dom';
 
 import App from './App'
 
-const rootElement = document.getElementById("root");
+const rootElement = (document.getElementById('root') as HTMLElement);
 render(<App />, rootElement);

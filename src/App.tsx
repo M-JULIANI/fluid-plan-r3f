@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState, SetStateAction } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Stats, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -7,39 +7,38 @@ import Editor from './canvas/Editor'
 import GuideCube from './threeComponents/GuideCube';
 import { useRefineState, useUpdateState } from 'state/hooks';
 import { Node } from 'schema/types';
+import { ProgramTree } from './mock/ProgramTree';
+import { makeNode } from './schema/make';
+import { Updater } from 'state/types';
 
-const Scene = () => {
+type SceneProps = {
+    root: Node,
+    updateTree: React.Dispatch<SetStateAction<Node>>
+}
+const Scene: React.FC<SceneProps> = (props: SceneProps) => {
+    const {
+        root,
+        updateTree
+    } = props;
 
-    const cubeNode = {
-        "id": "497b70fb-ce38-4910-8e85-b021e4a0b9b2",
-        "type": "guide",
-        "props": {
-            "category": "meeting",
-            "name": "small meeting",
-            "locked": true,
-            "length": 3,
-            "width": 2,
-            "rotated": false,
-            "zIndex": 6,
-            "position": [0, 0, 0]
-        },
-        "children": [1, 2]
-    };
+    console.log(root.children.map(c=>c.props.name).join(','));
 
-    const [state, updateState] = useState(cubeNode);
     const { camera } = useThree();
     useEffect(() => {
         camera.lookAt(0, 0, 0);
     }, [])
 
-
     return (
         <>
             {/* <gridHelper /> */}
             {/* <axesHelper /> */}
-            <pointLight intensity={1.0} position={[5, 20, 5]} />
             {/* </AdminMenu> */}
-            <GuideCube id="bestCube" state={state} updateState={updateState} />
+            <pointLight intensity={1.0} position={[5, 20, 5]} />
+            {root.children.map(node => {
+                return <GuideCube key={node.id} id="bestCube" nodeState={node} root={root} updateTree={updateTree} />
+            })}
+
+
         </>
     );
 };
@@ -54,6 +53,13 @@ const cameraSettings = {
 
 
 const App = () => {
+    const root = ProgramTree as Node;
+    const [state, setState] = useState(root);
+
+    // const sceneProps = {
+    //     root: root,
+    //     updateTree: setState
+    // }
     return (
         <div
             style={{
@@ -69,7 +75,7 @@ const App = () => {
                 {/* <Stats /> */}
                 {/* <OrbitControls makeDefault /> */}
                 <Suspense fallback={null}>
-                    <Scene />
+                    <Scene root={root} updateTree={setState} />
                 </Suspense>
             </Canvas>
         </div>

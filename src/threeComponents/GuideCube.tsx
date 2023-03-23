@@ -1,4 +1,4 @@
-import React, { SetStateAction, useCallback } from 'react';
+import React, { SetStateAction, useCallback, useEffect, useState } from 'react';
 import { useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
@@ -9,35 +9,45 @@ import { Node } from 'schema/types';
 import { Colors, ProgramCategory } from '../constants/colors';
 export type GuideCubeProps = {
     id: string,
-    state: Node,
-    updateState: React.Dispatch<SetStateAction<Node>>
+    nodeState: Node,
+    root: Node,
+    updateTree: React.Dispatch<SetStateAction<Node>>
     zIndex?: number,
 }
-export default function GuideCube(props: GuideCubeProps) {
-    const { id, state, updateState } = props;
+export default function GuideCube(props: GuideCubeProps, root: Node, updateTree: React.Dispatch<SetStateAction<Node>>) {
+    const { id, nodeState: state } = props;
     const cube = useRef<THREE.Mesh>({} as THREE.Mesh);
     const color = Colors[state.props.category as ProgramCategory];
-    // console.log('cube ref')
-    // console.log(cube)
+
+    const [position, setPosition] = useState(state.props.position);
+
+    useEffect(() => {
+        setPosition(state.props.position);
+        console.log('oroiginal position: ' + state.id)
+        console.log(state.props.position);
+    }, [])
 
     const updateProps = useCallback(() => {
-        // console.log('pos:')
-        // console.log(cube.current.position);
-        const updatedPos = { x: cube.current.position.x, y: cube.current.position.y };
-        updateState((state) => {
+        const updatedPos = { x: cube.current.position.x, y: 0, z: cube.current.position.z };
+        updateTree((state) => {
             return {
-                ...state,
-                props: {
-                    position: updatedPos
+                ...root,
+                children: {
+                    ...root.children,
+                    ...state,
+                    state: {
+                        props: {
+                            position: updatedPos
+                        }
+                    }
                 }
             }
-
         })
     }, []);
 
     return (
         <>
-            <mesh ref={cube}>
+            <mesh ref={cube} position={position}>
                 <boxGeometry />
                 <meshStandardMaterial color={color} />
             </mesh>
