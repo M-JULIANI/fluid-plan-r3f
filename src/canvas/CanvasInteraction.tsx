@@ -1,5 +1,5 @@
 
-import GuideCube, { GuideCubeProps } from '../threeComponents/GuideCube'
+import { GuideCubeProps } from '../threeComponents/GuideCube'
 
 type AssociatedSpaceProps = {
     width: number,

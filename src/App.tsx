@@ -3,23 +3,26 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Stats, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import "./styles.css";
-import Editor from './canvas/Editor'
+import {Editor} from './canvas/Editor'
 import GuideCube from './threeComponents/GuideCube';
-import { useRefineState, useUpdateState } from 'state/hooks';
+import { useRefineState, useUpdateState } from './state/hooks';
 import { Node } from 'schema/types';
 import { ProgramTree } from './mock/ProgramTree';
 import { makeNode } from './schema/make';
-import { Updater } from 'state/types';
+import { TaggedUpdater, Updater } from 'state/types';
 
 type SceneProps = {
     root: Node,
-    updateTree: React.Dispatch<SetStateAction<Node>>
+    updateRoot: TaggedUpdater<Node>
 }
 const Scene: React.FC<SceneProps> = (props: SceneProps) => {
     const {
         root,
-        updateTree
+        updateRoot
     } = props;
+
+    console.log('root')
+    console.log(root)
 
     console.log(root.children.map(c=>c.props.name).join(','));
 
@@ -35,7 +38,7 @@ const Scene: React.FC<SceneProps> = (props: SceneProps) => {
             {/* </AdminMenu> */}
             <pointLight intensity={1.0} position={[5, 20, 5]} />
             {root.children.map(node => {
-                return <GuideCube key={node.id} id="bestCube" nodeState={node} root={root} updateTree={updateTree} />
+                return <GuideCube key={node.id} id="bestCube" nodeState={node} root={root} updateTree={updateRoot} />
             })}
 
 
@@ -54,12 +57,13 @@ const cameraSettings = {
 
 const App = () => {
     const root = ProgramTree as Node;
-    const [state, setState] = useState(root);
+    const [state, updateState] = useUpdateState(root);
+    useEffect(()=>{
 
-    // const sceneProps = {
-    //     root: root,
-    //     updateTree: setState
-    // }
+        console.log('report something on state: ')
+        console.log(state)
+    }, [state])
+
     return (
         <div
             style={{
@@ -67,7 +71,7 @@ const App = () => {
                 width: "100vw",
             }}
         >
-            <Editor />
+            <Editor root={state} updateRoot={updateState}/>
             <Canvas
                 orthographic={true}
                 camera={cameraSettings}
@@ -75,7 +79,7 @@ const App = () => {
                 {/* <Stats /> */}
                 {/* <OrbitControls makeDefault /> */}
                 <Suspense fallback={null}>
-                    <Scene root={root} updateTree={setState} />
+                    <Scene root={state} updateRoot={updateState} />
                 </Suspense>
             </Canvas>
         </div>

@@ -15,28 +15,31 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import ProgramCard from '../components/ProgramCard';
-import { Node } from 'schema/types';
+import { Node } from '../schema/types';
 import { Container, keyframes } from '@mui/material';
 import { useCallback } from 'react';
+import { TaggedUpdater } from '../state/types';
 
 const minDrawerWidth = 240;
 const defaultWidth = 420;
 
 type SidebarProps = {
-    nodes: Node[],
-    updateNodes: Updater<Node[]>
+    node: Node,
+    updateNode: TaggedUpdater<Node>
 }
 
 export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
 
-    const { nodes, updateNodes } = props;
+    const { node, updateNode } = props;
+    console.log('a node is:')
+    console.log(node)
 
     console.log('nodes at sidebar')
-    console.log(nodes);
+    console.log(node?.children);
 
     const deleteNode = useCallback((id) => {
         console.log('deleting node: ' + id)
-        updateNodes(nodes.filter(node=> node.id !== id))
+        updateNode(node.children.filter(node=> node.id !== id))
     }, []);
 
     return (
@@ -64,7 +67,7 @@ export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
                 <Divider />
 
 
-                {nodes.map((node: Node) => (
+                {node.children.map((node: Node) => (
                     <ProgramCard 
                         key={node.id}
                         id={node.id}
