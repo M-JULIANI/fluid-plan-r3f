@@ -40,7 +40,8 @@ export default function GuideCube(props: GuideCubeProps) {
                     ...state,
                     props: {
                         ...state.props,
-                        position: updatedPos
+                        position: updatedPos,
+                        zIndex: state.props.zIndex++
                     }
 
                 }]
@@ -52,19 +53,6 @@ export default function GuideCube(props: GuideCubeProps) {
         updateTree(update);
 
         console.log('called')
-
-        // updateTree({
-        //         ...root,
-        //         children: {
-        //             ...root.children,
-        //             ...state,
-        //             state: {
-        //                 props: {
-        //                     position: updatedPos
-        //                 }
-        //             }
-        //         }
-        //     } as Node)
     }
         , []);
 

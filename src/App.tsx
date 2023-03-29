@@ -10,6 +10,7 @@ import { Node } from 'schema/types';
 import { ProgramTree } from './mock/ProgramTree';
 import { makeNode } from './schema/make';
 import { TaggedUpdater, Updater } from 'state/types';
+import { recomputeGraph } from './graph/graph';
 
 type SceneProps = {
     root: Node,
@@ -60,6 +61,7 @@ const App = () => {
     const [state, updateState] = useUpdateState(root);
     useEffect(()=>{
 
+        recomputeGraph(state)
         console.log('report something on state: ')
         console.log(state)
     }, [state])
