@@ -1,19 +1,31 @@
 import { Node } from "../schema/types"
 import { Vec3 } from "../geometry/types";
-import { Graph, GraphNode } from "./types";
+import { Graph, GraphNode, NodePositionInfo } from "./types";
 import { vecToArray, vecToArrayString } from "../geometry/utils";
 import { makeGraphNode } from "./make";
-export const recomputeGraph = (node: Node): Graph | undefined=>{
+import { sCluster } from "./scluster";
+
+export const recomputeGraph = (node: Node): NodePositionInfo[]=>{
     const overallGraph = populateGraphExtents(node.children);
     const nodes = node.children;
-    return undefined;
+
+    const clusters = nodes.map(node=> {
+        const cluster = new sCluster(node, overallGraph);
+        return cluster;
+    });
+
+    const clusterPositions = clusters.map(x=> {
+        return {node: x.parent, positions: x.getPositions()};
+    });
+
+    return clusterPositions;
 }
 
 const populateGraphExtents = (nodes: Node[]) =>{
-
     const record: Graph = {} as Graph;
-
     nodes.map(node=>{
         record[vecToArrayString(node.props.position)] = makeGraphNode(node);
     })
+    return record;
 }
+

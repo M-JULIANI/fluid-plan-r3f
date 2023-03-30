@@ -8,4 +8,9 @@ export type GraphNode = {
     active: boolean,
 }
 
+export type NodePositionInfo = {
+    node: Node,
+    positions: Vec3[]
+}
+
 export type Graph = Record<string, GraphNode>;

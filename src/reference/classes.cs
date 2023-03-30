@@ -54,20 +54,20 @@
       InitializeLocalGraph();
     }
 
-    public bool CheckIsOverlapped(List<Curve> otherCrvs)
-    {
-      foreach(var other in otherCrvs)
-      {
-        var inter = Rhino.Geometry.Intersect.Intersection.CurveCurve(_boundaryCrv, other, 0.1, 0.01);
-        if(inter != null)
-        {
-          Active = true;
-          return true;
-        }
-      }
-      Active = false;
-      return false;
-    }
+    // public bool CheckIsOverlapped(List<Curve> otherCrvs)
+    // {
+    //   foreach(var other in otherCrvs)
+    //   {
+    //     var inter = Rhino.Geometry.Intersect.Intersection.CurveCurve(_boundaryCrv, other, 0.1, 0.01);
+    //     if(inter != null)
+    //     {
+    //       Active = true;
+    //       return true;
+    //     }
+    //   }
+    //   Active = false;
+    //   return false;
+    // }
 
     public double GetNeighborConnectivity(int x, int y)
     {

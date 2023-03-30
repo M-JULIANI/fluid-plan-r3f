@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Stats, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import "./styles.css";
-import {Editor} from './canvas/Editor'
+import { Editor } from './canvas/Editor'
 import GuideCube from './threeComponents/GuideCube';
 import { useRefineState, useUpdateState } from './state/hooks';
 import { Node } from 'schema/types';
@@ -11,21 +11,26 @@ import { ProgramTree } from './mock/ProgramTree';
 import { makeNode } from './schema/make';
 import { TaggedUpdater, Updater } from 'state/types';
 import { recomputeGraph } from './graph/graph';
+import { NodePositionInfo } from 'graph/types';
+import { clone } from './state/ops';
+import ChildCube from './threeComponents/ChildCube';
 
 type SceneProps = {
     root: Node,
     updateRoot: TaggedUpdater<Node>
+    clusterNode: NodePositionInfo[]
 }
 const Scene: React.FC<SceneProps> = (props: SceneProps) => {
     const {
         root,
-        updateRoot
+        updateRoot,
+        clusterNode
     } = props;
 
-    console.log('root')
-    console.log(root)
+    console.log('cluster node')
+    console.log(clusterNode)
 
-    console.log(root.children.map(c=>c.props.name).join(','));
+    console.log(root.children.map(c => c.props.name).join(','));
 
     const { camera } = useThree();
     useEffect(() => {
@@ -39,8 +44,12 @@ const Scene: React.FC<SceneProps> = (props: SceneProps) => {
             {/* </AdminMenu> */}
             <pointLight intensity={1.0} position={[5, 20, 5]} />
             {root.children.map(node => {
-                return <GuideCube key={node.id} id="bestCube" nodeState={node} root={root} updateTree={updateRoot} />
+                return <GuideCube key={node.id} id="guideCube" nodeState={node} root={root} updateTree={updateRoot} />
             })}
+
+            {/* {clusterNode.map(node => {
+                return <ChildCube key={node.node.id} id="childCube" node={node.node} positions={node.positions}/>
+            })} */}
 
 
         </>
@@ -56,12 +65,25 @@ const cameraSettings = {
 }
 
 
+const recomputeTreeClusters = (node: Node, clusterPositions: NodePositionInfo[]) => {
+
+    const clonedNode = clone(node);
+    Object.values(clonedNode.children).forEach((node: Node) => {
+        const pos = clusterPositions.find(c => c.node.id === node.id);
+        node.props.cluster = pos?.positions;
+    });
+    return clonedNode;
+}
+
 const App = () => {
     const root = ProgramTree as Node;
     const [state, updateState] = useUpdateState(root);
-    useEffect(()=>{
+    const [clusterState, setClusterState] = useUpdateState(root);
+    useEffect(() => {
 
-        recomputeGraph(state)
+        const clusterInfo = recomputeGraph(state)
+    //    const recomputedNode = recomputeTreeClusters(state, clusterInfo)
+        setClusterState(clusterInfo);
         console.log('report something on state: ')
         console.log(state)
     }, [state])
@@ -73,7 +95,7 @@ const App = () => {
                 width: "100vw",
             }}
         >
-            <Editor root={state} updateRoot={updateState}/>
+            <Editor root={state} updateRoot={updateState} />
             <Canvas
                 orthographic={true}
                 camera={cameraSettings}
@@ -81,7 +103,7 @@ const App = () => {
                 {/* <Stats /> */}
                 {/* <OrbitControls makeDefault /> */}
                 <Suspense fallback={null}>
-                    <Scene root={state} updateRoot={updateState} />
+                    <Scene root={state} updateRoot={updateState} clusterNode={clusterState} />
                 </Suspense>
             </Canvas>
         </div>
