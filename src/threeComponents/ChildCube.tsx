@@ -9,12 +9,13 @@ import { Node } from 'schema/types';
 import { Colors, ProgramCategory } from '../constants/colors';
 import { Vec3 } from '../geometry/types';
 import { Vector3 } from 'three';
+import { vecToArray } from '../geometry/utils';
 export type ChildCubeProps = {
     id: string,
     node: Node,
     positions: Vec3[]
-   // root: Node,
-  //  updateTree: TaggedUpdater<Node>,
+    // root: Node,
+    //  updateTree: TaggedUpdater<Node>,
     zIndex?: number,
 }
 export default function ChildCube(props: ChildCubeProps) {
@@ -24,15 +25,15 @@ export default function ChildCube(props: ChildCubeProps) {
 
     return (
         <>
-        {positions.map(p=>{
-            const vec = {x: p.x, y: p.y, z: p.z} as Vector3;
-            return <>
-            <mesh ref={cube} position={vec}>
-                <boxGeometry />
-                <meshStandardMaterial color={color} />
-            </mesh>
-            </>
-        })}
+            {positions.map((pos,index) => {
+                const array = vecToArray(pos) as any;
+                return <>
+                <mesh ref={cube} position={array} scale={0.95} key={index}>
+                    <boxGeometry />
+                    <meshStandardMaterial color={color} />
+                </mesh>
+                </>
+            })}
         </>
     );
 };

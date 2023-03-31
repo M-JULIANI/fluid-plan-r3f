@@ -11,7 +11,8 @@ export type GuideCubeProps = {
     id: string,
     nodeState: Node,
     root: Node,
-    updateTree: TaggedUpdater<Node>,
+    // updateTree: TaggedUpdater<Node>,
+    updateTree: React.Dispatch<SetStateAction<Node>>,
     zIndex?: number,
 }
 export default function GuideCube(props: GuideCubeProps) {
@@ -22,20 +23,40 @@ export default function GuideCube(props: GuideCubeProps) {
     const [position, setPosition] = useState(state.props.position);
     useEffect(() => {
         setPosition(state.props.position);
-
-        console.log('oroiginal position: ' + state.id)
-        console.log(state.props.position);
     }, [])
 
-    const updateProps = useCallback(() => {
-        const updatedPos = { x: cube.current.position.x, y: 0, z: cube.current.position.z };
-        console.log('possssss:')
-        console.log(updatedPos);
+    // const updateProps = useCallback(() => {
+    //     const updatedPos = { x: cube.current.position.x, y: 0, z: cube.current.position.z };
+    //     console.log(updatedPos)
+    //     const update = {
+    //         ...root,
+    //         children:
+    //         [
+    //             ...root.children.filter(s => s.id !== state.id),
+    //             {
+    //                 ...state,
+    //                 props: {
+    //                     ...state.props,
+    //                     position: updatedPos,
+    //                     zIndex: state.props.zIndex++
+    //                 }
+    //             }]
+    //     } as unknown as Node;
 
+    //     console.log('update: ')
+    //     console.log(update)
+
+    //     updateTree(update);
+    // }, [position, setPosition, updateTree]);
+
+    const updateProps = (() => {
+        const updatedPos = { x: cube.current.position.x, y: 0, z: cube.current.position.z };
+        console.log(updatedPos)
         const update = {
             ...root,
             children:
-                [...root.children.filter(s=> s.id !== state.id),
+            [
+                ...root.children.filter(s => s.id !== state.id),
                 {
                     ...state,
                     props: {
@@ -43,21 +64,18 @@ export default function GuideCube(props: GuideCubeProps) {
                         position: updatedPos,
                         zIndex: state.props.zIndex++
                     }
-
                 }]
         } as unknown as Node;
 
-        // updateTree.call(root, update);
-        console.log('ut')
+        console.log('update: ')
         console.log(update)
-        updateTree(update);
 
-        console.log('called')
-    }
-        , []);
+        updateTree(update);
+    });
 
     return (
         <>
+
             <mesh ref={cube} position={position}>
                 <boxGeometry />
                 <meshStandardMaterial color={color} />

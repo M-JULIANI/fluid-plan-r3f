@@ -31,14 +31,14 @@ type SidebarProps = {
 export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
 
     const { node, updateNode } = props;
-    console.log('a node is:')
-    console.log(node)
+    // console.log('a node is:')
+    // console.log(node)
 
-    console.log('nodes at sidebar')
-    console.log(node?.children);
+    // console.log('nodes at sidebar')
+    // console.log(node?.children);
 
     const deleteNode = useCallback((id) => {
-        console.log('deleting node: ' + id)
+      // console.log('deleting node: ' + id)
         updateNode(node.children.filter(node=> node.id !== id))
     }, []);
 

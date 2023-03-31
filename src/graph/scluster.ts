@@ -1,18 +1,24 @@
 import { Vec3 } from 'geometry/types';
-import { vecToArrayString } from '../geometry/utils';
+import { arrayToVec, vecToArrayString } from '../geometry/utils';
 import { Node } from '../schema/types';
 import { Graph, GraphNode } from './types';
 import { makeGraphNode } from './make';
+import { generateUUID } from 'three/src/math/MathUtils';
 export class sCluster {
 
+    id: string;
     parent: Node;
     initialLocs: Vec3[];
     localGraph: Graph;
     overallGraph: Graph;
     constructor(node: Node, overallGraph: Graph) {
+        this.id = generateUUID();
         this.parent = node;
         this.overallGraph = overallGraph;
-        this.initialLocs = this.computeLocs(node.props.position, node.props.length, node.props.width);
+        const convertedPos = arrayToVec(node.props.position);
+        console.log('conversion:')
+        console.log(convertedPos)
+        this.initialLocs = this.computeLocs(convertedPos, node.props.length, node.props.width);
         this.localGraph = this.initializeLocalGraph(this.initialLocs);
     }
 
@@ -24,11 +30,16 @@ export class sCluster {
         const halfLength = Math.floor(length / 2);
         const halfWidth = Math.floor(width / 2);
 
-        let pos = [];
+        // console.log('length: ' + halfLength)
+        // console.log('width: ' + halfWidth)
+        // console.log('loc: ')
+        // console.log(loc)
+
+        let pos = [] as Vec3[];
         for (let i = -halfLength; i < halfLength; i++) {
             for (let j = -halfWidth; j < halfWidth; j++) {
                 const position = { x: loc.x + i, y: 0, z: loc.z + j } as Vec3;
-                pos.push(position);
+                 pos.push(position);
             }
         }
         return pos;

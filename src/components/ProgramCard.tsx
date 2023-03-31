@@ -104,8 +104,8 @@ export default function ProgramCard(props: ProgramCardProps) {
 
     const {id, category, name, length, width, locked, selected, deleteNode} = props;
     const classes = useStyles();
-    console.log('props at program card')
-    console.log(props)
+    // console.log('props at program card')
+    // console.log(props)
 
     const [isLocked, setLocked] = useState(locked);
     const [currentCategory, setCategory] = useState(category);
@@ -115,12 +115,12 @@ export default function ProgramCard(props: ProgramCardProps) {
     }, [])
 
     const handleCategory = (event: { target: { value: string } }) => {
-        console.log(event.target.value)
+       // console.log(event.target.value)
         setCategory(event.target.value)
     }
 
     const handleCardClick = useCallback(() => {
-        console.log(isSelected)
+       // console.log(isSelected)
         setSelected(s => !s);
     }, [])
 

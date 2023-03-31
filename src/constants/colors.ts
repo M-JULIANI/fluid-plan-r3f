@@ -4,10 +4,10 @@ export type ColorByProgram = {
 };
 
 export const Colors: ColorByProgram = {
-    meeting: 'purple',
-    office: 'blue',
-    amenity: 'orange',
-    core: 'gray',
-    support: 'lightgray',
-    event: 'green',
+    meeting: '#FF7F50', //coral
+    office: '#FFF44F', //lemon
+    amenity: '#87CEEB', //sky
+    core: '#FF69B4', // fucsia pink
+    support: '#FFA07A', //tangerine orange
+    event: '#9370DB', //lavender purple
 }
