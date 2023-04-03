@@ -253,10 +253,6 @@
       }
 
       return conn;
-
-
-      //foreach
-      //_overallGraph;
     }
 
     public void InitializeLocalGraph()

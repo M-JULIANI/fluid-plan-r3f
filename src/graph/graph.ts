@@ -1,7 +1,7 @@
 import { Node } from "../schema/types"
 import { Vec3 } from "../geometry/types";
 import { Graph, GraphNode, NodePositionInfo } from "./types";
-import { vecToArray, vecToArrayString } from "../geometry/utils";
+import { vecToArray, vec3ToArrayString } from "../geometry/utils";
 import { makeGraphNode } from "./make";
 import { sCluster } from "./scluster";
 
@@ -14,6 +14,16 @@ export const recomputeGraph = (node: Node): NodePositionInfo[] => {
         return cluster;
     });
 
+    const usedPositions = [] as Vec3[];
+
+
+    clusters.map((x, index)=>{
+        x.computePositions(usedPositions, index);
+        x.currentLocs.forEach(loc=> usedPositions.push(loc));
+        console.log('usedPositions: ')
+        console.log(usedPositions)
+    })
+
     const clusterPositions = clusters.map((x,index) => {
         const positions = x.getPositions();
         return { node: x.parent, positions: positions };
@@ -25,7 +35,7 @@ export const recomputeGraph = (node: Node): NodePositionInfo[] => {
 const populateGraphExtents = (nodes: Node[]) => {
     const record: Graph = {} as Graph;
     nodes.map(node => {
-        record[vecToArrayString(node.props.position)] = makeGraphNode(node);
+        record[vec3ToArrayString(node.props.position)] = makeGraphNode(node);
     })
     return record;
 }

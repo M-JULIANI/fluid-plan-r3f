@@ -16,9 +16,10 @@ import { NodePositionInfo } from 'graph/types';
 import ChildCube from './threeComponents/ChildCube';
 import { clone } from 'lodash';
 import { SmallTree } from './mock/SmallTree';
+import { TwoProgTree } from './mock/TwoProgTree';
 
 const App = () => {
-    const root = ProgramTree;
+    const root = TwoProgTree;
     // const [state, updateState] = useUpdateState(root);
     const [state, updateState] = useState(root);
     const [clusterState, setClusterState] = useUpdateState([] as NodePositionInfo[]);
@@ -109,14 +110,4 @@ const cameraSettings = {
     position: new THREE.Vector3(0, 100, 0)
 }
 
-
-const recomputeTreeClusters = (node: Node, clusterPositions: NodePositionInfo[]) => {
-
-    const clonedNode = clone(node);
-    Object.values(clonedNode.children).forEach((node: Node) => {
-        const pos = clusterPositions.find(c => c.node.id === node.id);
-        node.props.cluster = pos?.positions;
-    });
-    return clonedNode;
-}
 export default App;

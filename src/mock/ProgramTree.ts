@@ -10,8 +10,8 @@ export const ProgramTree = {
                 "category": "meeting",
                 "name": "small meeting",
                 "locked": true,
-                "length": 3,
-                "width": 2,
+                "length": 8,
+                "width": 4,
                 "rotated": false,
                 "zIndex": 6,
                 "position": [0, 0, 0]
