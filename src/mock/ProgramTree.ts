@@ -20,7 +20,7 @@ export const ProgramTree = {
         {
             "id": "f2a02e14-81a8-44e1-9cf6-b2e9415aaac3",
             "props": {
-                "category": "meeting",
+                "category": "events",
                 "name": "medium meeting",
                 "locked": false,
                 "length": 5,
@@ -46,7 +46,7 @@ export const ProgramTree = {
         {
             "id": "b8a083b3-6521-4690-84ef-97dccc018ba6",
             "props": {
-                "category": "core",
+                "category": "support",
                 "name": "medium core",
                 "locked": true,
                 "length": 7,

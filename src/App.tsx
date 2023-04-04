@@ -19,7 +19,7 @@ import { SmallTree } from './mock/SmallTree';
 import { TwoProgTree } from './mock/TwoProgTree';
 
 const App = () => {
-    const root = TwoProgTree;
+    const root = ProgramTree;
     // const [state, updateState] = useUpdateState(root);
     const [state, updateState] = useState(root);
     const [clusterState, setClusterState] = useUpdateState([] as NodePositionInfo[]);
@@ -64,7 +64,7 @@ const App = () => {
                 camera={cameraSettings}
             >
                 {/* <Stats /> */}
-                <OrbitControls makeDefault />
+                {/* <OrbitControls makeDefault /> */}
                 <Suspense fallback={null}>
                     <Scene root={state} updateRoot={updateState} clusterNode={clusterState} />
                 </Suspense>

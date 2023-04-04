@@ -112,21 +112,22 @@ export class sCluster {
       }
 
       //is this being sorted correctly
-      const orderedByConnectivity = perimeterLocations.sort((a, b) => b.connectivity - a.connectivity);
-      const newExpansionNodes = orderedByConnectivity.slice(0, objectsToRelocate + 1);
+      const orderedByConnectivity = perimeterLocations.sort((a, b) => a.connectivity - b.connectivity);
+      const newExpansionNodes = orderedByConnectivity.slice(0, objectsToRelocate);
 
       const keys = Object.keys(this.localGraph);
       const vals = Object.values(this.localGraph);
 
-      let expansionPtLength = newExpansionNodes.length;
       this.localGraph = {} as Graph;
+      let inclusive = 0;
       for (let k = 0; k < keys.length; k++) {
         if (!locsToRemove.includes(stringArrayToVec3(keys[k]))) {
           this.localGraph[keys[k]] = vals[k];
+          inclusive++;
         }
       }
 
-      for (let i = 0; i < expansionPtLength; i++) {
+      for (let i = 0; i < newExpansionNodes.length; i++) {
         this.tryExpand(newExpansionNodes[i], this.localGraph);
       }
       this.currentLocs = Object.values(this.localGraph).filter(f => f.active).map(x => x.position);
@@ -209,15 +210,18 @@ export class sCluster {
         if (i == 0 && j == 0)
           continue;
 
-        var neighborPos = { x: x + 1, y: 0, z: y + j } as Vec3;
+        var neighborPos = { x: x + i, y: 0, z: y + j } as Vec3;
         const neighborIndex = vec3ToArrayString(neighborPos);
         const existsOnLocalGraph = this.localGraph[neighborIndex];
+        // console.log('exists on local' + existsOnLocalGraph)
+
+        // console.log('at try expand: ' + Object.keys(this.localGraph).length)
 
         if (existsOnLocalGraph == null || existsOnLocalGraph === undefined) {
           const existsOnOverall = this.overallGraph[neighborIndex];
           if (existsOnOverall) {
             if (!existsOnOverall.active) {
-              this.updateGraphLocation(graphNode, neighborPos, localGraph);
+             // this.updateGraphLocation(graphNode, neighborPos, localGraph);
             }
           }
           else {
@@ -245,10 +249,23 @@ export class sCluster {
 
     const keys = Object.keys(locGraph);
     const values = Object.values(locGraph);
+
+    const keySet = new Set(keys);
+    const valueSet = new Set(values);
+    console.log('keySet: ')
+    console.log(keySet)
+    console.log('valueSet: ')
+    console.log(valueSet)
+    let count = 0;
     locGraph = {} as Graph;
     for (let i = 0; i < keys.length; i++) {
-      if (keys[i] !== vec3ToArrayString(parentLoc))
+      // console.log('keyo: ' + keys[i])
+      // console.log('thingo: ' + vec3ToArrayString(parentLoc))
+      if (keys[i] === vec3ToArrayString(parentLoc)){
         locGraph[keys[i]] = values[i];
+        count++;
+      }
     }
+    console.log('c: ' + count);
   }
 }

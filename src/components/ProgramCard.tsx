@@ -104,8 +104,7 @@ export default function ProgramCard(props: ProgramCardProps) {
 
     const {id, category, name, length, width, locked, selected, deleteNode} = props;
     const classes = useStyles();
-    // console.log('props at program card')
-    // console.log(props)
+
 
     const [isLocked, setLocked] = useState(locked);
     const [currentCategory, setCategory] = useState(category);
