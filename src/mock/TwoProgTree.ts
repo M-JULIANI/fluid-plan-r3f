@@ -10,7 +10,7 @@ export const TwoProgTree = {
                 "category": "meeting",
                 "name": "small meeting",
                 "locked": true,
-                "length": 8,
+                "length": 5,
                 "width": 4,
                 "rotated": false,
                 "zIndex": 6,

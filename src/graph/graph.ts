@@ -20,13 +20,12 @@ export const recomputeGraph = (node: Node): NodePositionInfo[] => {
     clusters.map((x, index)=>{
         x.computePositions(usedPositions, index);
         x.currentLocs.forEach(loc=> usedPositions.push(loc));
-        console.log('usedPositions: ')
-        console.log(usedPositions)
     })
 
     const clusterPositions = clusters.map((x,index) => {
         const positions = x.getPositions();
-        return { node: x.parent, positions: positions };
+        const connectivity = x.getConnectivity()
+        return { node: x.parent, positions: positions, connectivities: connectivity };
     });
 
     return clusterPositions;

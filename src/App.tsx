@@ -31,14 +31,22 @@ const App = () => {
         setClusterState(clusterInfo);
     }, [])
 
+    const cameraSettings = {
+        zoom: 25,
+        fov: 45,
+        near: 0.1,
+        far: 200,
+        position: new THREE.Vector3(0, 100, 0)
+    }
+
     //reactivity to 'guide cubes'
     useEffect(() => {
 
         //    console.log(state)
         console.log(state)
         const clusterInfo = recomputeGraph(state)
-        // console.log('recompute cluster: ')
-        // console.log(clusterInfo)
+        console.log('recompute cluster: ')
+        console.log(clusterInfo)
         //    const recomputedNode = recomputeTreeClusters(state, clusterInfo)
         setClusterState(clusterInfo);
     }, [state])
@@ -56,7 +64,7 @@ const App = () => {
                 camera={cameraSettings}
             >
                 {/* <Stats /> */}
-                {/* <OrbitControls makeDefault /> */}
+                <OrbitControls makeDefault />
                 <Suspense fallback={null}>
                     <Scene root={state} updateRoot={updateState} clusterNode={clusterState} />
                 </Suspense>
@@ -96,18 +104,10 @@ const Scene: React.FC<SceneProps> = (props: SceneProps) => {
             })}
 
             {clusterNode.map((node) => {
-                return <ChildCube key={node.node.id} id="childCube" node={node.node} positions={node.positions} />
+                return <ChildCube key={node.node.id} id="childCube" node={node.node} positions={node.positions} connectivities={node.connectivities}/>
             })}
         </>
     );
 };
-
-const cameraSettings = {
-    zoom: 25,
-    fov: 45,
-    near: 0.1,
-    far: 200,
-    position: new THREE.Vector3(0, 100, 0)
-}
 
 export default App;

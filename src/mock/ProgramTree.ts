@@ -49,8 +49,8 @@ export const ProgramTree = {
                 "category": "core",
                 "name": "medium core",
                 "locked": true,
-                "length": 5,
-                "width": 3,
+                "length": 7,
+                "width": 4,
                 "rotated": false,
                 "zIndex": 3,
                 "position": [5, 0, 8]
@@ -62,8 +62,8 @@ export const ProgramTree = {
                 "category": "core",
                 "name": "medium core",
                 "locked": true,
-                "length": 5,
-                "width": 3,
+                "length": 8,
+                "width": 4,
                 "rotated": false,
                 "zIndex": 2,
                 "position": [2, 0, 8]
@@ -76,7 +76,7 @@ export const ProgramTree = {
                 "name": "lobby",
                 "locked": false,
                 "length": 5,
-                "width": 3,
+                "width": 5,
                 "rotated": false,
                 "zIndex": 1,
                 "position": [10, 0, 3]
@@ -88,8 +88,8 @@ export const ProgramTree = {
                 "category": "office",
                 "name": "worksation",
                 "locked": false,
-                "length": 6,
-                "width": 3,
+                "length": 4,
+                "width": 6,
                 "rotated": false,
                 "zIndex": 0,
                 "position": [6, 0, 1]
@@ -102,7 +102,7 @@ export const ProgramTree = {
                 "name": "worksation",
                 "locked": false,
                 "length": 6,
-                "width": 3,
+                "width": 7,
                 "rotated": false,
                 "zIndex": 7,
                 "position": [6, 0, 8]

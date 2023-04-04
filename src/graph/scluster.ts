@@ -4,12 +4,14 @@ import { Node } from '../schema/types';
 import { Graph, GraphNode } from './types';
 import { makeGraphNode, makeGraphNodeFromVec } from './make';
 import { generateUUID } from 'three/src/math/MathUtils';
+import { LockClock } from '@mui/icons-material';
 export class sCluster {
 
   id: string;
   parent: Node;
   initialLocs: Vec3[];
   currentLocs: Vec3[];
+  connectivities: number[];
   localGraph: Graph;
   overallGraph: Graph;
   constructor(node: Node, overallGraph: Graph) {
@@ -20,10 +22,15 @@ export class sCluster {
     this.initialLocs = this.computeLocs(convertedPos, node.props.length, node.props.width);
     this.currentLocs = [...this.initialLocs];
     this.localGraph = this.initializeLocalGraph(this.currentLocs);
+    this.connectivities = [];
   }
 
   getPositions() {
     return this.currentLocs;
+  }
+
+  getConnectivity() {
+    return this.connectivities;
   }
 
   computeLocs(loc: Vec3, length: number, width: number): Vec3[] {
@@ -64,7 +71,7 @@ export class sCluster {
       let objectsToRelocate = 0;
 
       var locsToRemove: Vec3[] = [];
-      const currentStrings = currentPts.map(c=> vec3ToArrayString(c));
+      const currentStrings = currentPts.map(c => vec3ToArrayString(c));
 
       for (let i = 0; i < prohibitedLocations.length; i++) {
         let loc = prohibitedLocations[i];
@@ -76,7 +83,7 @@ export class sCluster {
           locsToRemove.push(loc)
         }
       }
-      
+
       const localGraphKeys = Object.keys(this.localGraph);
       for (let i = 0; i < localGraphKeys.length; i++) {
         const item = stringArrayToVec3(localGraphKeys[i])
@@ -100,6 +107,7 @@ export class sCluster {
         // // console.log(loct)
         console.log('move locs to remove than there are perim conditions!!!!!!')
         this.currentLocs = Object.values(this.localGraph).filter(x => x.active).map(x => x.position);
+        this.connectivities = conn;
         return conn;
       }
 
@@ -124,6 +132,7 @@ export class sCluster {
       this.currentLocs = Object.values(this.localGraph).filter(f => f.active).map(x => x.position);
     }
 
+    this.connectivities = conn;
     return conn;
   };
 
@@ -233,6 +242,13 @@ export class sCluster {
     locGraph[index] = graphNode;
     this.overallGraph[index] = graphNode;
     const parentLoc = parent.position;
-    delete locGraph[vec3ToArrayString(parentLoc)];
+
+    const keys = Object.keys(locGraph);
+    const values = Object.values(locGraph);
+    locGraph = {} as Graph;
+    for (let i = 0; i < keys.length; i++) {
+      if (keys[i] !== vec3ToArrayString(parentLoc))
+        locGraph[keys[i]] = values[i];
+    }
   }
 }

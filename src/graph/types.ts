@@ -11,6 +11,7 @@ export type GraphNode = {
 export type NodePositionInfo = {
     node: Node,
     positions: Vec3[]
+    connectivities?: number[]
 }
 
 export type Graph = Record<string, GraphNode>;
