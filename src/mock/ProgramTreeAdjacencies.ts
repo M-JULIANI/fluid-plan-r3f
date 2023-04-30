@@ -1,0 +1,50 @@
+export const adjacencies = {
+    "meeting": {
+        "office": 15,
+        "meeting": 0,
+        "amenity": 10,
+        "core": 35,
+        "support": 21,
+        "events": 15,
+    },
+    "office": {
+        "office": 0,
+        "meeting": 30,
+        "amenity": 25,
+        "core": 18,
+        "support": 10,
+        "events": 23,
+    },
+    "amenity": {
+        "office": 21,
+        "meeting": 10,
+        "amenity": 0,
+        "core": 25,
+        "support": 30,
+        "events": 12,
+    },
+    "core": {
+        "office": 14,
+        "meeting": 22,
+        "amenity": 16,
+        "core": 0,
+        "support": 15,
+        "events": 22,
+    },
+    "support": {
+        "office": 24,
+        "meeting": 30,
+        "amenity": 12,
+        "core": 20,
+        "support": 0,
+        "events": 12,
+    },
+    "events": {
+        "office": 34,
+        "meeting": 10,
+        "amenity": 18,
+        "core": 16,
+        "support": 30,
+        "events": 0,
+    }
+};

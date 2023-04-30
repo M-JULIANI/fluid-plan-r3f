@@ -4,6 +4,7 @@ import genBins, { Bin, Bins } from "@visx/mock-data/lib/generators/genBins";
 import { scaleLinear } from "@visx/scale";
 import { HeatmapCircle, HeatmapRect } from "@visx/heatmap";
 import { getSeededRandom } from "@visx/mock-data";
+import { AdjacencyBasket } from "adjacency/adjacencies";
 
 const hot1 = "#77312f";
 const hot2 = "#f33d15";
@@ -58,6 +59,7 @@ const opacityScale = scaleLinear<number>({
 export type HeatmapProps = {
     width: number;
     height: number;
+    adjacencyBasket?: AdjacencyBasket;
     margin?: { top: number; right: number; bottom: number; left: number };
     separation?: number;
     events?: boolean;
@@ -68,6 +70,7 @@ const defaultMargin = { top: 100, left: 60, right: 20, bottom: 100 };
 function AdjacencyMatrix({
     width,
     height,
+    adjacencyBasket,
     events = true,
     margin = defaultMargin,
     separation = 20
@@ -113,7 +116,7 @@ function AdjacencyMatrix({
                             heatmapBins.map((bin) => (
                                 <>
                                     <text
-                                        transform={`translate(${bin.x}, ${-(binWidth * 3)}) rotate(90)`}
+                                        transform={`translate(${bin.x}, ${-(binWidth)}) rotate(-90)`}
                                         fontSize={binWidth}
                                     >
                                         {bin.x}

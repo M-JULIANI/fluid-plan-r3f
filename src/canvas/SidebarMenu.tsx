@@ -75,7 +75,7 @@ export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
                 anchor="left"
             >
                 <div style={{ backgroundColor: '#EAEAEA' }}>
-                    <Toolbar><h3>Program Elements</h3></Toolbar>
+                    <Toolbar><h3>Fluid Plan</h3></Toolbar>
                 </div>
                 <Divider />
 
@@ -95,7 +95,7 @@ export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
                             <AccordionContainer></AccordionContainer>
                         </AccordionDetails>
                     </Accordion>
-                    <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+                    {/* <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel2bh-content"
@@ -148,7 +148,7 @@ export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
                                 amet egestas eros, vitae egestas augue. Duis vel est augue.
                             </Typography>
                         </AccordionDetails>
-                    </Accordion>
+                    </Accordion> */}
                 </div>
 
 

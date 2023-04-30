@@ -26,6 +26,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AdjacencyMatrix from './AdjacencyMatrix';
 import { ParentSize } from '@visx/responsive';
 import { useEffect } from 'react';
+import { adjacencies } from '../mock/ProgramTreeAdjacencies';
 
 export default function AccordionContainer<SidebarProps>(props: SidebarProps) {
 
@@ -33,6 +34,8 @@ export default function AccordionContainer<SidebarProps>(props: SidebarProps) {
 
     const [expanded, setExpanded] = React.useState<string | false>(false);
     const [animated, setAnimated] = React.useState<boolean>(false);
+
+    const adjacencyBasket = adjacencies;
 
     const handleChange =
         (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -54,7 +57,7 @@ export default function AccordionContainer<SidebarProps>(props: SidebarProps) {
                     <Typography sx={{ color: 'text.secondary' }}> </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                {expanded  && <AdjacencyMatrix width={300} height={500} />}
+                {expanded  && <AdjacencyMatrix width={300} height={500} adjacencyBasket={adjacencyBasket} />}
                 </AccordionDetails>
             </Accordion>
         </>
