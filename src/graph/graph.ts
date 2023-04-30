@@ -7,7 +7,7 @@ import { sCluster } from "./scluster";
 
 export const recomputeGraph = (node: Node): NodePositionInfo[] => {
     const overallGraph = populateGraphExtents(node.children);
-    const nodes = node.children;
+    const nodes = orderChildrenByZIndex(node.children);
 
     const clusters = nodes.map(node => {
         const cluster = new sCluster(node, overallGraph);
@@ -37,5 +37,9 @@ const populateGraphExtents = (nodes: Node[]) => {
         record[vec3ToArrayString(node.props.position)] = makeGraphNode(node);
     })
     return record;
+}
+
+const orderChildrenByZIndex = (nodes: Node[]) => {
+    return nodes.sort((a, b) => (a?.props?.zIndex ?? 0) - (b?.props?.zIndex ?? 0));
 }
 

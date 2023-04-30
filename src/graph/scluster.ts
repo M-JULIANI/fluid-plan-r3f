@@ -118,10 +118,12 @@ export class sCluster {
       const keys = Object.keys(this.localGraph);
       const vals = Object.values(this.localGraph);
 
+      const locsToRemoveS = locsToRemove.map(l=> vec3ToArrayString(l));
+
       this.localGraph = {} as Graph;
       let inclusive = 0;
       for (let k = 0; k < keys.length; k++) {
-        if (!locsToRemove.includes(stringArrayToVec3(keys[k]))) {
+        if (!locsToRemoveS.includes(keys[k])) {
           this.localGraph[keys[k]] = vals[k];
           inclusive++;
         }
