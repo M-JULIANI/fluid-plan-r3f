@@ -18,36 +18,11 @@ export type GuideCubeProps = {
 export default function GuideCube(props: GuideCubeProps) {
     const { id, nodeState: state, root, updateTree } = props;
     const cube = useRef<THREE.Mesh>({} as THREE.Mesh);
-    const color = Colors[state.props.category as ProgramCategory];
 
     const [position, setPosition] = useState(state.props.position);
     useEffect(() => {
         setPosition(state.props.position);
-    }, [])
-
-    // const updateProps = useCallback(() => {
-    //     const updatedPos = { x: cube.current.position.x, y: 0, z: cube.current.position.z };
-    //     console.log(updatedPos)
-    //     const update = {
-    //         ...root,
-    //         children:
-    //         [
-    //             ...root.children.filter(s => s.id !== state.id),
-    //             {
-    //                 ...state,
-    //                 props: {
-    //                     ...state.props,
-    //                     position: updatedPos,
-    //                     zIndex: state.props.zIndex++
-    //                 }
-    //             }]
-    //     } as unknown as Node;
-
-    //     console.log('update: ')
-    //     console.log(update)
-
-    //     updateTree(update);
-    // }, [position, setPosition, updateTree]);
+    }, []);
 
     const updateProps = (() => {
         const updatedPos = { x: cube.current.position.x, y: 1, z: cube.current.position.z };
