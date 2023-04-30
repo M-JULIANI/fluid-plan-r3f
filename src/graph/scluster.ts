@@ -103,8 +103,6 @@ export class sCluster {
       if (locsToRemove.length > perimeterLocations.length) {
         this.localGraph = this.recursiveExpand(this.localGraph, locsToRemove.length);
         // const loct = Object.values(this.localGraph).filter(x => x.active).map(x => x.position);
-        // // console.log('filtered list:')
-        // // console.log(loct)
         console.log('move locs to remove than there are perim conditions!!!!!!')
         this.currentLocs = Object.values(this.localGraph).filter(x => x.active).map(x => x.position);
         this.connectivities = conn;

@@ -1,7 +1,7 @@
 import React, { SetStateAction, useCallback, useEffect, useState } from 'react';
 import { useRef } from 'react';
 import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, Vector3 } from '@react-three/fiber';
 import { TransformControls } from '@react-three/drei';
 import { TaggedUpdater, Updater } from 'state/types';
 import { patch, $set } from '../state/ops';
@@ -50,21 +50,20 @@ export default function GuideCube(props: GuideCubeProps) {
     // }, [position, setPosition, updateTree]);
 
     const updateProps = (() => {
-        const updatedPos = { x: cube.current.position.x, y: 0, z: cube.current.position.z };
+        const updatedPos = { x: cube.current.position.x, y: 1, z: cube.current.position.z };
         console.log(updatedPos)
         const update = {
             ...root,
             children:
-            [
-                ...root.children.filter(s => s.id !== state.id),
-                {
-                    ...state,
-                    props: {
-                        ...state.props,
-                        position: updatedPos,
-                        zIndex: state.props.zIndex++
-                    }
-                }]
+                [
+                    ...root.children.filter(s => s.id !== state.id),
+                    {
+                        ...state,
+                        props: {
+                            ...state.props,
+                            position: updatedPos
+                        }
+                    }]
         } as unknown as Node;
 
         console.log('update: ')
@@ -73,18 +72,45 @@ export default function GuideCube(props: GuideCubeProps) {
         updateTree(update);
     });
 
+    const updateZIndex = (() => {
+        const update = {
+            ...root,
+            props: {
+                ...root.props,
+                globalZ: (root?.props?.globalZ ?? 0) + 1
+            },
+            children:
+                [
+                    ...root.children.filter(s => s.id !== state.id),
+                    {
+                        ...state,
+                        props: {
+                            ...state.props,
+                            zIndex: root.props.globalZ + 1
+                        }
+                    }]
+        } as unknown as Node;
+
+        console.log('updating z-index:');
+        console.log(root.props.globalZ);
+
+        updateTree(update);
+    });
+
+    const isActive = state.props.zIndex === root.props.globalZ;
+    // const base = [position[0], 0, position[2]] as Vector3;
+     const moved = [position[0], 1, position[2]] as Vector3
     return (
         <>
-
-            <mesh ref={cube} position={position}>
+            <mesh ref={cube} position={moved} scale={isActive ? 0.75 : 0.33}>
                 <boxGeometry />
-                <meshStandardMaterial color={color} />
+                <meshStandardMaterial color={isActive ? 'lightgray' : 'gray'} />
             </mesh>
             {/* <TransformControls position-x={2} translationSnap={1}  */}
             <TransformControls object={cube} mode="translate"
                 size={0.5}
                 showY={false}
-                translationSnap={1} onObjectChange={updateProps} />
+                translationSnap={1} onObjectChange={updateProps} onMouseUp={updateZIndex} />
         </>
     );
 };
