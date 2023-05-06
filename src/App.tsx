@@ -1,9 +1,9 @@
 import { Suspense, useEffect, useRef, useState, SetStateAction } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Stats, OrbitControls } from "@react-three/drei";
+import { Stats, OrbitControls, useCamera } from "@react-three/drei";
 import * as THREE from "three";
 import "./styles.css";
-import { Editor } from './canvas/Editor'
+import { Editor, EditorProps } from './canvas/Editor'
 import GuideCube from './threeComponents/GuideCube';
 import { useRefineState, useUpdateState } from './state/hooks';
 import { Node } from 'schema/types';
@@ -17,28 +17,74 @@ import ChildCube from './threeComponents/ChildCube';
 import { clone } from 'lodash';
 import { SmallTree } from './mock/SmallTree';
 import { TwoProgTree } from './mock/TwoProgTree';
+import { CameraViewMode, SpaceRepresentation, DisplaySettings } from './canvas/TopMenu';
+import { NodeSettings } from './canvas/SidebarMenu';
+
+
+
+const positionTop = new THREE.Vector3(0, 100, 0);
+const positionAxon = new THREE.Vector3(50, 100, 50);
+const cameraSettings2D = {
+    zoom: 25,
+    fov: 45,
+    near: 0.1,
+    far: 200,
+    position: positionTop
+}
+
+export type CameraProps = {
+    position: THREE.Vector3,
+}
+
+function Camera(props: CameraProps) {
+    const { position } = props;
+    const three = useThree();
+    const ref = useRef<THREE.OrthographicCamera>(three.camera as THREE.OrthographicCamera);
+    three.camera.position.set(position.x, position.y, position.z);
+    return (<orthographicCamera ref={ref} />);
+}
+
+
 
 const App = () => {
     const root = ProgramTree;
     // const [state, updateState] = useUpdateState(root);
     const [state, updateState] = useState(root);
+    const [viewMode, setViewMode] = useState<CameraViewMode>(CameraViewMode.TwoD);
+    const [spaceRepState, setSpaceRepState] = useState<SpaceRepresentation>(SpaceRepresentation.Cell);
     const [clusterState, setClusterState] = useUpdateState([] as NodePositionInfo[]);
+
+    const editorProps = {
+        nodeSettings: {
+            node: state,
+            updateNode: updateState
+        },
+        displaySettings: {
+            cameraViewProps: {
+                viewMode: viewMode,
+                updateCameraViewMode: setViewMode
+            },
+            spaceRepresentationProps: {
+                spaceRenderMode: spaceRepState,
+                updateSpaceRenderMode: setSpaceRepState,
+            }
+        }
+    } as EditorProps;
+
+    console.log(editorProps);
+
+    if(editorProps.nodeSettings.node === undefined) {
+        console.log('NODEIS')
+    }
 
     //initialize clusters 
     useEffect(() => {
         const clusterInfo = recomputeGraph(state)
         console.log(clusterInfo)
         setClusterState(clusterInfo);
-    }, [])
+    }, []);
 
-    const cameraSettings = {
-        zoom: 25,
-        fov: 45,
-        near: 0.1,
-        far: 200,
-        position: new THREE.Vector3(0, 100, 0)
-    }
-
+    const cameraPosition = viewMode === CameraViewMode.TwoD ? positionTop : positionAxon;
     //reactivity to 'guide cubes'
     useEffect(() => {
 
@@ -58,13 +104,15 @@ const App = () => {
                 width: "100vw",
             }}
         >
-            <Editor root={state} updateRoot={updateState} />
+            <Editor {...editorProps}/>
             <Canvas
                 orthographic={true}
-                camera={cameraSettings}
+                camera={cameraSettings2D}
             >
+                <Camera position={cameraPosition} />
                 {/* <Stats /> */}
                 <OrbitControls makeDefault />
+
                 <Suspense fallback={null}>
                     <Scene root={state} updateRoot={updateState} clusterNode={clusterState} />
                 </Suspense>
@@ -104,7 +152,7 @@ const Scene: React.FC<SceneProps> = (props: SceneProps) => {
             })}
 
             {clusterNode.map((node) => {
-                return <ChildCube key={node.node.id} id="childCube" node={node.node} positions={node.positions} connectivities={node.connectivities}/>
+                return <ChildCube key={node.node.id} id="childCube" node={node.node} positions={node.positions} connectivities={node.connectivities} />
             })}
         </>
     );

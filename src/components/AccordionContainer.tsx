@@ -27,6 +27,7 @@ import AdjacencyMatrix from './AdjacencyMatrix';
 import { ParentSize } from '@visx/responsive';
 import { useEffect } from 'react';
 import { adjacencies } from '../mock/ProgramTreeAdjacencies';
+import { AdjacencyTable } from './AdjacencyMatrixAlt';
 
 export default function AccordionContainer<SidebarProps>(props: SidebarProps) {
 
@@ -57,7 +58,8 @@ export default function AccordionContainer<SidebarProps>(props: SidebarProps) {
                     <Typography sx={{ color: 'text.secondary' }}> </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                {expanded  && <AdjacencyMatrix width={300} height={500} adjacencyBasket={adjacencyBasket} />}
+                {/* {expanded  && <AdjacencyMatrix width={300} height={500} adjacencyBasket={adjacencyBasket} />} */}
+                {/* {expanded  && <AdjacencyTable basket={adjacencyBasket} />} */}
                 </AccordionDetails>
             </Accordion>
         </>

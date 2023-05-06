@@ -17,3 +17,11 @@ export const ProgramList = [
     [ProgramCategory.Support],
     [ProgramCategory.Event],
 ]
+
+export const programTypeCategories: Record<string, ProgramCategory> = {
+    "Office": ProgramCategory.Office,
+    "Meeting": ProgramCategory.Meeting,
+    "Amenity": ProgramCategory.Amenity,
+    "Core": ProgramCategory.Core,
+    "Event": ProgramCategory.Event,
+  };

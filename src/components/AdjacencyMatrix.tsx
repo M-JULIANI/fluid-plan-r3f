@@ -20,6 +20,8 @@ const binData = genBins(
   /** binFunc */(idx) => 150 * idx,
   /** countFunc */(i, number) => 25 * (number - i) * seededRandom()
 );
+console.log('binss')
+console.log(binData)
 
 function max<Datum>(data: Datum[], value: (d: Datum) => number): number {
     return Math.max(...data.map(value));
@@ -59,7 +61,7 @@ const opacityScale = scaleLinear<number>({
 export type HeatmapProps = {
     width: number;
     height: number;
-    adjacencyBasket?: AdjacencyBasket;
+    adjacencyBasket: AdjacencyBasket;
     margin?: { top: number; right: number; bottom: number; left: number };
     separation?: number;
     events?: boolean;
@@ -84,7 +86,8 @@ function AdjacencyMatrix({
     const xMax = size;
     const yMax = height - margin.bottom - margin.top;
 
-    const binWidth = xMax / binData.length;
+    const keys = Object.keys(adjacencyBasket);
+    const binWidth = xMax / keys.length;
     const binHeight = yMax / bucketSizeMax;
 
     xScale.range([0, xMax]);

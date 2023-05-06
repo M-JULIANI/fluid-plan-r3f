@@ -1,40 +1,40 @@
-import GuideCube from '../threeComponents/GuideCube';
-import React, { SetStateAction, useState } from 'react';
-import SidebarMenu from './SidebarMenu';
-import { ProgramTree } from '../../src/mock/ProgramTree';
-import { makeNode } from '../schema/make';
-import { useUpdateState, useRefineState } from '../state/hooks';
-import { getNodeKeys } from '../schema/traverse';
+import React, { SetStateAction } from 'react';
+import SidebarMenu, { NodeSettings } from './SidebarMenu';
 import { Node } from '../schema/types';
-import { TaggedUpdater } from 'state/types';
+import CssBaseline from '@mui/material/CssBaseline';
+import { Container, keyframes } from '@mui/material';
+import TopMenu, { DisplaySettings } from './TopMenu';
+import { CameraViewMode } from './TopMenu';
 
-type EditorProps = {
-    root: Node,
-   // updateRoot: TaggedUpdater<Node>,
-    updateRoot: React.Dispatch<SetStateAction<Node>>
+export interface EditorProps extends JSX.IntrinsicAttributes{
+    nodeSettings: NodeSettings,
+    displaySettings: DisplaySettings
 }
-export const Editor: React.FC<EditorProps> = (props: EditorProps) => {
-    const programTree = ProgramTree as Node;
 
-    const {
-        root,
-        updateRoot
-    } = props;
+export function Editor<EditorProps>(props: EditorProps) {
 
-    const nodes = programTree.children.map(node => makeNode(node));
-    //const partialNodes = nodes.slice(0, 5);
-    // console.log('ut at editor: ')
-    // console.log(updateRoot)
-    // const editPath = getNodeKeys(programTree, isolation, undefinedGetter) || [];
-    // const [editShapes, updateShapes] = refine(...editPath, 'children')();
+    console.log('editor:')
+    console.log(props)
 
+    // const {displaySettings, nodeSettings} = props;
+    // const {
+    //     node,
+    //     updateNode
+    // } = nodeSettings;
 
-    // const cube = GuideCube({ name: 'Meeting Room', id: '', category: 'Meeting', index: 0, zIndex: 1 })
+    // const {
+    //     cameraViewProps,
+    //     spaceRepresentationProps
+    // } = displaySettings;
+
 
     return (
         <>
-            {/* {cube} */}
-            <SidebarMenu node={root} updateNode={updateRoot} />
+            <Container sx={{ display: 'flex' }}>
+                <CssBaseline />
+                {/* {cube} */}
+                <SidebarMenu {...props} />
+            </Container>
         </>
     )
 
