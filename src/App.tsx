@@ -19,8 +19,8 @@ import { SmallTree } from './mock/SmallTree';
 import { TwoProgTree } from './mock/TwoProgTree';
 import { CameraViewMode, SpaceRepresentation, DisplaySettings } from './canvas/TopMenu';
 import { NodeSettings } from './canvas/SidebarMenu';
-
-
+import { Vec3 } from './geometry/types';
+import alphaShape from 'alpha-shape';
 
 const positionTop = new THREE.Vector3(0, 100, 0);
 const positionAxon = new THREE.Vector3(50, 100, 50);
@@ -71,11 +71,6 @@ const App = () => {
         }
     } as EditorProps;
 
-    console.log(editorProps);
-
-    if(editorProps.nodeSettings.node === undefined) {
-        console.log('NODEIS')
-    }
 
     //initialize clusters 
     useEffect(() => {
@@ -85,6 +80,7 @@ const App = () => {
     }, []);
 
     const cameraPosition = viewMode === CameraViewMode.TwoD ? positionTop : positionAxon;
+    const orbitEnabled = viewMode === CameraViewMode.TwoD ? false : true;
     //reactivity to 'guide cubes'
     useEffect(() => {
 
@@ -104,17 +100,18 @@ const App = () => {
                 width: "100vw",
             }}
         >
-            <Editor {...editorProps}/>
+            <Editor {...editorProps} />
             <Canvas
                 orthographic={true}
                 camera={cameraSettings2D}
             >
+                 {orbitEnabled ? <OrbitControls makeDefault />: null}
+
                 <Camera position={cameraPosition} />
                 {/* <Stats /> */}
-                <OrbitControls makeDefault />
-
+               
                 <Suspense fallback={null}>
-                    <Scene root={state} updateRoot={updateState} clusterNode={clusterState} />
+                    <Scene root={state} updateRoot={updateState} clusterNode={clusterState} representation={spaceRepState} />
                 </Suspense>
             </Canvas>
         </div>
@@ -125,13 +122,16 @@ type SceneProps = {
     root: Node,
     // updateRoot: TaggedUpdater<Node>,
     updateRoot: React.Dispatch<SetStateAction<Node>>,
-    clusterNode: NodePositionInfo[]
+    clusterNode: NodePositionInfo[],
+    representation: SpaceRepresentation
+
 }
 const Scene: React.FC<SceneProps> = (props: SceneProps) => {
     const {
         root,
         updateRoot,
-        clusterNode
+        clusterNode,
+        representation
     } = props;
 
     //console.log(root.children.map(c => c.props.name).join(','));
@@ -151,11 +151,48 @@ const Scene: React.FC<SceneProps> = (props: SceneProps) => {
                 return <GuideCube key={node.id} id="guideCube" nodeState={node} root={root} updateTree={updateRoot} />
             })}
 
-            {clusterNode.map((node) => {
-                return <ChildCube key={node.node.id} id="childCube" node={node.node} positions={node.positions} connectivities={node.connectivities} />
-            })}
+            {representation === SpaceRepresentation.Cell
+                ? clusterNode.map((node) => {
+                    return <ChildCube key={node.node.id} id="childCube" node={node.node} positions={node.positions} connectivities={node.connectivities} />
+                })
+                : makeProgramPolygons(clusterNode)}
         </>
     );
 };
+
+type Point = [number, number];
+
+const makeProgramPolygons = (clusterNodeInfo: NodePositionInfo[]) => {
+
+    const positions = clusterNodeInfo.map((nodeInfo) => {
+        return makePolygon(nodeInfo.positions);
+    });
+
+    return positions;
+}
+
+
+const makePolygon = (positions: Vec3[])=> {
+    const mapped = positions.map(pos=> [pos.x, pos.z]);
+    console.log('m-a-p-p-e-d');
+    console.log(mapped);
+    const alpha = 1;
+    const result = alphaShape(alpha, mapped);
+    console.log('r-e-s-u-l-t');
+    console.log(result);
+    return result;
+}
+
+const representPolygonPerimeter = (perimeter: number[][]) => {
+
+    const points = perimeter.map((point) => {
+        return <mesh>
+            <sphereBufferGeometry args={[0.1, 16, 16]} />
+            <meshStandardMaterial color="red" />
+        </mesh>
+    });
+
+    return points;
+}
 
 export default App;

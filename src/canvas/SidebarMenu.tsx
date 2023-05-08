@@ -43,11 +43,6 @@ export interface SidebarProps extends EditorProps {
 }
 
 export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
-
-    console.log('sidebar')
-    console.log(props)
-  
-    // const displaySettings  = props.displaySettings;
     const [expanded, setExpanded] = React.useState<string | false>(false);
 
     const handleChange =

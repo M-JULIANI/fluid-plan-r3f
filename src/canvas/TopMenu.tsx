@@ -4,8 +4,9 @@ import { SetStateAction } from 'react';
 import { Button, IconButton } from '@material-ui/core';
 import { SaveOutlined as SaveIcon } from '@material-ui/icons';
 import { South as TwodIcon, SouthEast as TwoHalfDIcon } from '@mui/icons-material';
-import { Dangerous as VoxelIcon, Face as PolygonIcon } from '@mui/icons-material';
+import { DashboardCustomizeOutlined as VoxelIcon, HexagonOutlined as PolygonIcon } from '@mui/icons-material';
 import { SidebarProps } from './SidebarMenu';
+import { Box, Container, Stack } from '@mui/material';
 
 
 const minDrawerWidth = 220;
@@ -35,12 +36,9 @@ export type DisplaySettings = {
     }
 }
 
-export type TopMenuProps =  Partial<SidebarProps>
+export type TopMenuProps = Partial<SidebarProps>
 
 export default function TopMenu<TopMenuProps>(props: TopMenuProps) {
-
-    console.log('proponents:')
-    console.log(props)
     const { displaySettings } = props;
 
     const { cameraViewProps,
@@ -58,29 +56,37 @@ export default function TopMenu<TopMenuProps>(props: TopMenuProps) {
     const [localSpaceRenderMode, setLocalSpaceRenderMode] = React.useState<SpaceRepresentation>(spaceRenderMode);
 
 
-    //camera icon
-    const getCameraViewModeIcon = (viewMode: CameraViewMode) => viewMode === CameraViewMode.TwoD ? (<TwodIcon />) : (<TwoHalfDIcon />);
+    //flipped camera icon
+    const getCameraViewModeIcon = (viewMode: CameraViewMode) => viewMode === CameraViewMode.TwoD
+        ? (<TwoHalfDIcon />)
+        : (<TwodIcon />)
     const [viewModeIcon, setViewModeIcon] =
-        React.useState(getCameraViewModeIcon(cameraViewMode));
+        React.useState(getCameraViewModeIcon(localCameraViewMode));
 
-    //space-representation icon
+    //flipped space-representation icon
     const getSpaceRepresentationIcon = (representation: SpaceRepresentation) =>
         representation === SpaceRepresentation.Cell
-            ? (<VoxelIcon />)
-            : (<PolygonIcon />);
+            ? (<PolygonIcon />)
+            : (<VoxelIcon />);
 
     const [spaceRepIcon, setSpaceRepIcon] =
-        React.useState(getSpaceRepresentationIcon(spaceRenderMode));
+        React.useState(getSpaceRepresentationIcon(localSpaceRenderMode));
 
     const handleViewModeChange = () => {
+        //update local state
         setLocalCameraViewMode(mode => mode === CameraViewMode.TwoHalfD ? CameraViewMode.TwoD : CameraViewMode.TwoHalfD);
+        //update icon
         setViewModeIcon(getCameraViewModeIcon(localCameraViewMode));
+        //send udpates upstream
         updateCameraViewMode(localCameraViewMode);
     }
 
     const handleSpaceRenderMode = () => {
+        //update local state
         setLocalSpaceRenderMode(rep => rep === SpaceRepresentation.Cell ? SpaceRepresentation.Polygon : SpaceRepresentation.Cell)
+        //update icon
         setSpaceRepIcon(getSpaceRepresentationIcon(localSpaceRenderMode));
+        //send updates upstream
         updateSpaceRenderMode(localSpaceRenderMode);
     }
 
@@ -95,14 +101,16 @@ export default function TopMenu<TopMenuProps>(props: TopMenuProps) {
 
     return (
 
-        <div>
-            <Button variant="contained" startIcon={viewModeIcon} onClick={handleViewModeChange}>
-                {cameraViewMode === CameraViewMode.TwoD ? 'Plan' : 'Axon'}
+        <Stack direction={"row"} spacing={'10px'} padding={'10px'}>
+            <Button variant="contained" onClick={handleViewModeChange}>
+                {viewModeIcon}
+                {localCameraViewMode === CameraViewMode.TwoD ? 'Plan' : 'Axon'}
             </Button>
-            <Button variant="contained" startIcon={spaceRepIcon} onClick={handleSpaceRenderMode}>
+            <Button variant="contained" onClick={handleSpaceRenderMode}>
+                {spaceRepIcon}
                 {localSpaceRenderMode === SpaceRepresentation.Cell ? 'Voxel' : 'Polygon'}
             </Button>
-        </div>
+        </Stack>
 
 
     );

@@ -12,22 +12,6 @@ export interface EditorProps extends JSX.IntrinsicAttributes{
 }
 
 export function Editor<EditorProps>(props: EditorProps) {
-
-    console.log('editor:')
-    console.log(props)
-
-    // const {displaySettings, nodeSettings} = props;
-    // const {
-    //     node,
-    //     updateNode
-    // } = nodeSettings;
-
-    // const {
-    //     cameraViewProps,
-    //     spaceRepresentationProps
-    // } = displaySettings;
-
-
     return (
         <>
             <Container sx={{ display: 'flex' }}>
