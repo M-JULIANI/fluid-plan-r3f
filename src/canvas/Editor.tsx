@@ -5,10 +5,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { Container, keyframes } from '@mui/material';
 import TopMenu, { DisplaySettings } from './TopMenu';
 import { CameraViewMode } from './TopMenu';
+import { NodePositionInfo } from 'graph/types';
 
 export interface EditorProps extends JSX.IntrinsicAttributes{
     nodeSettings: NodeSettings,
-    displaySettings: DisplaySettings
+    displaySettings: DisplaySettings,
+    nodeInfo: NodePositionInfo[]
 }
 
 export function Editor<EditorProps>(props: EditorProps) {

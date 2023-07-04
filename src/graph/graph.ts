@@ -24,8 +24,10 @@ export const recomputeGraph = (node: Node): NodePositionInfo[] => {
 
     const clusterPositions = clusters.map((x,index) => {
         const positions = x.getPositions();
+        const perimeterPositions = x.getPerimeterCells(x.localGraph);
+        const perim = Object.values(perimeterPositions).map(x => x.position);
         const connectivity = x.getConnectivity()
-        return { node: x.parent, positions: positions, connectivities: connectivity };
+        return { node: x.parent, positions: positions, perimeterPositions: perim, connectivities: connectivity };
     });
 
     return clusterPositions;

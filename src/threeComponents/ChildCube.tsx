@@ -6,7 +6,8 @@ import { Text, Text3D, TransformControls } from '@react-three/drei';
 import { TaggedUpdater, Updater } from 'state/types';
 import { patch, $set } from '../state/ops';
 import { Node } from 'schema/types';
-import { Colors, ProgramCategory } from '../constants/colors';
+import { Colors } from '../constants/colors';
+import { ProgramCategory } from '../constants/program';
 import { Vec3 } from '../geometry/types';
 import { Vector3 } from 'three';
 import { vecToArray } from '../geometry/utils';
@@ -34,15 +35,14 @@ export default function ChildCube(props: ChildCubeProps) {
                     <mesh ref={cube} position={array} scale={0.95} key={index}>
                         <boxGeometry />
                         <meshStandardMaterial color={color} />
-
                     </mesh>
 
-                    <Text position={updatedArray} color={'black'}
+                    {/* <Text position={updatedArray} color={'black'}
                         fontSize={0.5}
                         rotation-x={-Math.PI / 2}
                     >
                         {(connectivities && connectivities[index]) ? `${connectivities[index]}`: 'u'}
-                    </Text>
+                    </Text> */}
                 </>
             })}
         </>

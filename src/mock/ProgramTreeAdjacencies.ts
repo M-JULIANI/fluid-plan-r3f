@@ -5,7 +5,7 @@ export const adjacencies = {
         "amenity": 10,
         "core": 35,
         "support": 21,
-        "events": 15,
+        "event": 15,
     },
     "office": {
         "office": 0,
@@ -13,7 +13,7 @@ export const adjacencies = {
         "amenity": 25,
         "core": 18,
         "support": 10,
-        "events": 23,
+        "event": 23,
     },
     "amenity": {
         "office": 21,
@@ -21,7 +21,7 @@ export const adjacencies = {
         "amenity": 0,
         "core": 25,
         "support": 30,
-        "events": 12,
+        "event": 12,
     },
     "core": {
         "office": 14,
@@ -29,7 +29,7 @@ export const adjacencies = {
         "amenity": 16,
         "core": 0,
         "support": 15,
-        "events": 22,
+        "event": 22,
     },
     "support": {
         "office": 24,
@@ -37,14 +37,14 @@ export const adjacencies = {
         "amenity": 12,
         "core": 20,
         "support": 0,
-        "events": 12,
+        "event": 12,
     },
-    "events": {
+    "event": {
         "office": 34,
         "meeting": 10,
         "amenity": 18,
         "core": 16,
         "support": 30,
-        "events": 0,
+        "event": 0,
     }
 };

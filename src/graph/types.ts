@@ -10,7 +10,8 @@ export type GraphNode = {
 
 export type NodePositionInfo = {
     node: Node,
-    positions: Vec3[]
+    positions: Vec3[],
+    perimeterPositions: Vec3[],
     connectivities?: number[]
 }
 

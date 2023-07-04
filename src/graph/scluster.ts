@@ -5,6 +5,15 @@ import { Graph, GraphNode } from './types';
 import { makeGraphNode, makeGraphNodeFromVec } from './make';
 import { generateUUID } from 'three/src/math/MathUtils';
 import { LockClock } from '@mui/icons-material';
+
+
+enum Direction {
+  Right = 0,
+  Up = 1,
+  Left = 2,
+  Down = 3
+
+}
 export class sCluster {
 
   id: string;
@@ -64,6 +73,100 @@ export class sCluster {
     return localGraph;
   }
 
+  static getSortedPerimeterCells(perimeterCells: Vec3[]) {
+
+
+    console.log('input: ')
+    console.log(perimeterCells)
+
+    const perimeterGraph: Graph = {};
+    perimeterCells.forEach((x) => {
+      const newPos = { x: x.x, y: x.z, z: x.y } as Vec3
+      const graphNode = {
+        node: {},
+        connectivity: 0,
+        position: newPos,
+        active: false,
+      } as GraphNode;
+      perimeterGraph[vec3ToArrayString(newPos)] = graphNode;
+    })
+
+
+    const startingNode = Object.values(perimeterGraph).sort((a, b) => a.position.y - b.position.y)[0];
+    console.log('all: ')
+    console.log(Object.values(perimeterGraph).map(x => x.position.y))
+    console.log('selected: ' + startingNode.position.y)
+
+    let output = [] as Vec3[];
+    let found = true;
+    let currentNode = startingNode;
+    let c = 0;
+    while (found) {
+      const { exists, position } = this.tryGetNext(currentNode, perimeterGraph, c===0);
+      found = exists;
+      if (found && position){
+        currentNode = perimeterGraph[vec3ToArrayString(position)];
+        output.push(position);
+      }
+      c++;
+    }
+
+    console.log('output: ')
+    console.log(output)
+
+    return output;
+  }
+
+  static tryGetNext(current: GraphNode, graph: Graph, initial: boolean): { exists: boolean, position: Vec3 | undefined } {
+    let nPos = {} as Vec3;
+    for (let i = 0; i < 4; i++) {
+      let direction = Direction.Down;
+      if (i === 0) direction = Direction.Right;
+      if (i === 1) direction = Direction.Up;
+      if (i === 2) direction = Direction.Left;
+      if (i === 3) direction = Direction.Down;
+      const { exists, position: neighborPos } = this.getNeighbor(current.position, graph, direction);
+      nPos = neighborPos;
+      if (exists) {
+        if (graph[vec3ToArrayString(neighborPos)]) {
+          if(!initial) graph[vec3ToArrayString(neighborPos)].active = true;
+          return { exists: true, position: neighborPos };
+        }
+      }
+    }
+    return { exists: false, position: nPos };
+  }
+
+  static getNeighbor(pos: Vec3, graph: Graph, direction: Direction): { exists: boolean, position: Vec3 } {
+    const { x, y, z } = pos;
+    let xIncrement, yIncrement = 0;
+    switch (direction) {
+      case Direction.Right:
+        xIncrement = 1;
+        yIncrement = 0;
+        break;
+      case Direction.Up:
+        xIncrement = 0;
+        yIncrement = 1;
+        break;
+      case Direction.Left:
+        xIncrement = -1;
+        yIncrement = 0;
+        break
+      case Direction.Down:
+        xIncrement = 0;
+        yIncrement = -1;
+        break;
+    }
+    const neighborPos = { x: x + xIncrement, y: y + yIncrement, z: z } as Vec3;
+    const exists = graph[vec3ToArrayString(neighborPos)];
+    if (exists && !exists.active) {
+      return { exists: true, position: neighborPos }
+    }
+
+    return { exists: false, position: neighborPos }
+  }
+
   computePositions(prohibitedLocations: Vec3[], listIndex: number) {
     const currentPts = [...this.currentLocs];
     const conn: number[] = [];
@@ -96,14 +199,14 @@ export class sCluster {
 
       var perimeterLocations = this.getPerimeterCells(this.localGraph);
 
-      console.log('perimieter locations: ' + perimeterLocations.length)
-      console.log('loc to remove: ' + locsToRemove.length)
-      console.log('objs to relocate: ' + objectsToRelocate)
+      // console.log('perimieter locations: ' + perimeterLocations.length)
+      // console.log('loc to remove: ' + locsToRemove.length)
+      // console.log('objs to relocate: ' + objectsToRelocate)
 
       if (locsToRemove.length > perimeterLocations.length) {
         this.localGraph = this.recursiveExpand(this.localGraph, locsToRemove.length);
         // const loct = Object.values(this.localGraph).filter(x => x.active).map(x => x.position);
-        console.log('move locs to remove than there are perim conditions!!!!!!')
+        //   console.log('move locs to remove than there are perim conditions!!!!!!')
         this.currentLocs = Object.values(this.localGraph).filter(x => x.active).map(x => x.position);
         this.connectivities = conn;
         return conn;
@@ -116,7 +219,7 @@ export class sCluster {
       const keys = Object.keys(this.localGraph);
       const vals = Object.values(this.localGraph);
 
-      const locsToRemoveS = locsToRemove.map(l=> vec3ToArrayString(l));
+      const locsToRemoveS = locsToRemove.map(l => vec3ToArrayString(l));
 
       this.localGraph = {} as Graph;
       let inclusive = 0;
@@ -180,9 +283,12 @@ export class sCluster {
     return count;
   }
 
-
   getPerimeterCells(locGraph: Graph): GraphNode[] {
-    return Object.values(locGraph).filter(cell => this.getNeighborCount(cell.position.x, cell.position.z) <= 5)
+    return Object.values(locGraph).filter(cell => this.getNeighborCount(cell.position.x, cell.position.z) < 8)
+  }
+
+  getPerimeterCellsManually(locGraph: Graph): GraphNode[] {
+    return Object.values(locGraph).filter(cell => this.getNeighborCount(cell.position.x, cell.position.z) < 8)
   }
 
   recursiveExpand(localGraph: Graph, numCells: number): Graph {
@@ -221,7 +327,7 @@ export class sCluster {
           const existsOnOverall = this.overallGraph[neighborIndex];
           if (existsOnOverall) {
             if (!existsOnOverall.active) {
-             // this.updateGraphLocation(graphNode, neighborPos, localGraph);
+              // this.updateGraphLocation(graphNode, neighborPos, localGraph);
             }
           }
           else {
@@ -252,20 +358,20 @@ export class sCluster {
 
     const keySet = new Set(keys);
     const valueSet = new Set(values);
-    console.log('keySet: ')
-    console.log(keySet)
-    console.log('valueSet: ')
-    console.log(valueSet)
+    // console.log('keySet: ')
+    // console.log(keySet)
+    // console.log('valueSet: ')
+    // console.log(valueSet)
     let count = 0;
     locGraph = {} as Graph;
     for (let i = 0; i < keys.length; i++) {
       // console.log('keyo: ' + keys[i])
       // console.log('thingo: ' + vec3ToArrayString(parentLoc))
-      if (keys[i] === vec3ToArrayString(parentLoc)){
+      if (keys[i] === vec3ToArrayString(parentLoc)) {
         locGraph[keys[i]] = values[i];
         count++;
       }
     }
-    console.log('c: ' + count);
+    //   console.log('c: ' + count);
   }
 }

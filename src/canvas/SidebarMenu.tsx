@@ -29,6 +29,9 @@ import { CameraViewMode, DisplaySettings } from './TopMenu';
 import { SetStateAction } from 'react';
 import TopMenu from './TopMenu';
 import { EditorProps } from './Editor';
+import { NodePositionInfo } from 'graph/types';
+import { makeImagesOfClusters } from '../geometry/utils';
+import { Stack } from '@mui/material';
 
 const minDrawerWidth = 240;
 const defaultWidth = 420;
@@ -40,15 +43,34 @@ export type NodeSettings = {
 
 export interface SidebarProps extends EditorProps {
     props: Pick<EditorProps, 'displaySettings'>;
+    nodeInfo: NodePositionInfo[]
 }
 
 export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
+    const { nodeInfo } = props;
+    // console.log('making use of ndoeInfo props at sidebar')
+    // console.log(nodeInfo)
     const [expanded, setExpanded] = React.useState<string | false>(false);
+    const [images, setImages] = React.useState<{ [k: string]: string }>({});
+   // const [rendered, setRendered] = React.useState<boolean>(false);
 
     const handleChange =
         (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
             setExpanded(isExpanded ? panel : false);
         };
+
+
+    React.useEffect(() => {
+        const renderClusters = async () => {
+            //if (rendered) return;
+            const img = makeImagesOfClusters(nodeInfo, 3);
+            const imageMap: { [k: string]: string } = {};
+            nodeInfo.forEach((b: NodePositionInfo, i: number) => (imageMap[b.node.id] = img[i]));
+           // setRendered(true);
+            setImages(imageMap);
+        };
+        renderClusters();
+    }, [nodeInfo]);
 
     return (
         <Drawer
@@ -87,6 +109,32 @@ export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
                     </AccordionSummary>
                     <AccordionDetails>
                         <AccordionContainer></AccordionContainer>
+                    </AccordionDetails>
+                </Accordion>
+                <Accordion expanded={true}>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel-images-content"
+                        id="panel-images-header"
+                    >
+                        <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                            Clusters
+                        </Typography>
+                        <Typography sx={{ color: 'text.secondary' }}></Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Stack direction={"column"} spacing={'10px'} padding={'10px'}>
+                            {Object.keys(images).map(key => {
+                                return <img
+                                        key={key}
+                                        src={images[key]}
+                                        alt={'cluster name'}
+                                        style={{ width: '100px', maxHeight: '100', objectFit: 'contain', paddingRight: '10px' }}
+                                    />
+                             
+
+                            })}
+                        </Stack>
                     </AccordionDetails>
                 </Accordion>
                 {/* <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>

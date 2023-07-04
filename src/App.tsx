@@ -21,6 +21,10 @@ import { CameraViewMode, SpaceRepresentation, DisplaySettings } from './canvas/T
 import { NodeSettings } from './canvas/SidebarMenu';
 import { Vec3 } from './geometry/types';
 import alphaShape from 'alpha-shape';
+import { getPointCollectionWidthHeight, makeAllPointsFromNodes } from './geometry/grid';
+import { createImageOfGrid, vecToArray } from './geometry/utils';
+import { Shape } from 'three';
+import PolygonMesh from './threeComponents/PolygonMesh';
 
 const positionTop = new THREE.Vector3(0, 100, 0);
 const positionAxon = new THREE.Vector3(50, 100, 50);
@@ -29,9 +33,9 @@ const cameraSettings2D = {
     fov: 45,
     near: 0.1,
     far: 200,
-    position: positionTop
+    position: positionTop,
+    bottom: -175
 }
-
 export type CameraProps = {
     position: THREE.Vector3,
 }
@@ -41,6 +45,7 @@ function Camera(props: CameraProps) {
     const three = useThree();
     const ref = useRef<THREE.OrthographicCamera>(three.camera as THREE.OrthographicCamera);
     three.camera.position.set(position.x, position.y, position.z);
+    three.camera.lookAt(0, 0, 0);
     return (<orthographicCamera ref={ref} />);
 }
 
@@ -69,26 +74,25 @@ const App = () => {
                 updateSpaceRenderMode: setSpaceRepState,
             }
         }
-    } as EditorProps;
-
+    };
 
     //initialize clusters 
     useEffect(() => {
         const clusterInfo = recomputeGraph(state)
-        console.log(clusterInfo)
+       // console.log(clusterInfo)
         setClusterState(clusterInfo);
     }, []);
-
+    ;
     const cameraPosition = viewMode === CameraViewMode.TwoD ? positionTop : positionAxon;
     const orbitEnabled = viewMode === CameraViewMode.TwoD ? false : true;
     //reactivity to 'guide cubes'
     useEffect(() => {
 
         //    console.log(state)
-        console.log(state)
+      //  console.log(state)
         const clusterInfo = recomputeGraph(state)
-        console.log('recompute cluster: ')
-        console.log(clusterInfo)
+      //  console.log('recompute cluster: ')
+      //  console.log(clusterInfo)
         //    const recomputedNode = recomputeTreeClusters(state, clusterInfo)
         setClusterState(clusterInfo);
     }, [state])
@@ -100,16 +104,15 @@ const App = () => {
                 width: "100vw",
             }}
         >
-            <Editor {...editorProps} />
+            <Editor {...editorProps} nodeInfo={clusterState} />
             <Canvas
                 orthographic={true}
-                camera={cameraSettings2D}
-            >
-                 {orbitEnabled ? <OrbitControls makeDefault />: null}
+                camera={cameraSettings2D}>
+                {orbitEnabled ? <OrbitControls makeDefault /> : null}
 
                 <Camera position={cameraPosition} />
                 {/* <Stats /> */}
-               
+
                 <Suspense fallback={null}>
                     <Scene root={state} updateRoot={updateState} clusterNode={clusterState} representation={spaceRepState} />
                 </Suspense>
@@ -134,13 +137,6 @@ const Scene: React.FC<SceneProps> = (props: SceneProps) => {
         representation
     } = props;
 
-    //console.log(root.children.map(c => c.props.name).join(','));
-
-    const { camera } = useThree();
-    useEffect(() => {
-        camera.lookAt(0, 0, 0);
-    }, [])
-
     return (
         <>
             {/* <gridHelper /> */}
@@ -155,44 +151,16 @@ const Scene: React.FC<SceneProps> = (props: SceneProps) => {
                 ? clusterNode.map((node) => {
                     return <ChildCube key={node.node.id} id="childCube" node={node.node} positions={node.positions} connectivities={node.connectivities} />
                 })
-                : makeProgramPolygons(clusterNode)}
+                : clusterNode.map((node) => {
+                    // return node.perimeterPositions.map((perim, i)=>{
+                    //     return <ChildCube key={i} id="chil-cube-perim" node={node.node} positions={node.perimeterPositions} connectivities={node.connectivities}/>
+                    // })
+                   return <PolygonMesh key={node.node.id} id="polygonMesh" node={node.node} positions={node.positions} perimeterPositions={node.perimeterPositions} />
+                })
+            }
         </>
     );
 };
 
-type Point = [number, number];
-
-const makeProgramPolygons = (clusterNodeInfo: NodePositionInfo[]) => {
-
-    const positions = clusterNodeInfo.map((nodeInfo) => {
-        return makePolygon(nodeInfo.positions);
-    });
-
-    return positions;
-}
-
-
-const makePolygon = (positions: Vec3[])=> {
-    const mapped = positions.map(pos=> [pos.x, pos.z]);
-    console.log('m-a-p-p-e-d');
-    console.log(mapped);
-    const alpha = 1;
-    const result = alphaShape(alpha, mapped);
-    console.log('r-e-s-u-l-t');
-    console.log(result);
-    return result;
-}
-
-const representPolygonPerimeter = (perimeter: number[][]) => {
-
-    const points = perimeter.map((point) => {
-        return <mesh>
-            <sphereBufferGeometry args={[0.1, 16, 16]} />
-            <meshStandardMaterial color="red" />
-        </mesh>
-    });
-
-    return points;
-}
 
 export default App;
