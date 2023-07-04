@@ -11,9 +11,7 @@ import { ProgramCategory } from '../constants/program';
 import { Vec3 } from '../geometry/types';
 import { Shape, Vector3 } from 'three';
 import { vecToArray } from '../geometry/utils';
-import { NodePositionInfo } from 'graph/types';
-import { includes } from 'lodash';
-import { sCluster } from '../graph/scluster';
+import { getSortedPerimeterCells } from '../graph/perimeterSolver';
 export type ChildCubeProps = {
   id: string,
   node: Node,
@@ -47,7 +45,7 @@ export default function PolygonMesh(props: ChildCubeProps) {
   const normalVecs = [] as THREE.Vector3[];
   perimeterPositions.forEach(x => normalVecs.push(new THREE.Vector3(0, 1, 0)));
 
-  const orderedPerimeterPositions = sCluster.getSortedPerimeterCells(perimeterPositions).map(x=> {return {x: x.x, y: x.z, z: x.y} as Vec3});
+  const orderedPerimeterPositions = getSortedPerimeterCells(perimeterPositions).map(x=> {return {x: x.x, y: x.z, z: x.y} as Vec3});
 
   const computedNormals = [] as number[];
   normalVecs.forEach(x => {
