@@ -152,9 +152,6 @@ const Scene: React.FC<SceneProps> = (props: SceneProps) => {
                     return <ChildCube key={node.node.id} id="childCube" node={node.node} positions={node.positions} connectivities={node.connectivities} />
                 })
                 : clusterNode.map((node) => {
-                    // return node.perimeterPositions.map((perim, i)=>{
-                    //     return <ChildCube key={i} id="chil-cube-perim" node={node.node} positions={node.perimeterPositions} connectivities={node.connectivities}/>
-                    // })
                    return <PolygonMesh key={node.node.id} id="polygonMesh" node={node.node} positions={node.positions} perimeterPositions={node.perimeterPositions} />
                 })
             }

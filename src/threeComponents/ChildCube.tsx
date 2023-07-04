@@ -37,12 +37,12 @@ export default function ChildCube(props: ChildCubeProps) {
                         <meshStandardMaterial color={color} />
                     </mesh>
 
-                    {/* <Text position={updatedArray} color={'black'}
+                    <Text position={updatedArray} color={'black'}
                         fontSize={0.5}
                         rotation-x={-Math.PI / 2}
                     >
                         {(connectivities && connectivities[index]) ? `${connectivities[index]}`: 'u'}
-                    </Text> */}
+                    </Text>
                 </>
             })}
         </>

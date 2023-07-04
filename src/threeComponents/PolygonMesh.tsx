@@ -2,7 +2,7 @@ import React, { SetStateAction, useCallback, useEffect, useState } from 'react';
 import { useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
-import { Line, Text, Text3D, TransformControls } from '@react-three/drei';
+import { Line, Point, Text, Text3D, TransformControls } from '@react-three/drei';
 import { TaggedUpdater, Updater } from 'state/types';
 import { patch, $set } from '../state/ops';
 import { Node } from 'schema/types';
@@ -11,7 +11,10 @@ import { ProgramCategory } from '../constants/program';
 import { Vec3 } from '../geometry/types';
 import { Shape, Vector3 } from 'three';
 import { vecToArray } from '../geometry/utils';
-import { getSortedPerimeterCells } from '../graph/perimeterSolver';
+import { getSortedPerimeterCells, getPerimeterCellsManually, getNeighborCount } from '../graph/perimeterSolver';
+import { makeExpandedGrid } from '../geometry/grid';
+import { Graph, GraphNode } from '../graph/types';
+import { vec3ToArrayString } from '../geometry/utils';
 export type ChildCubeProps = {
   id: string,
   node: Node,
@@ -20,7 +23,7 @@ export type ChildCubeProps = {
   zIndex?: number,
 }
 export default function PolygonMesh(props: ChildCubeProps) {
-  const { id, node, perimeterPositions } = props;
+  const { id, node, perimeterPositions, positions } = props;
   const cube = useRef<THREE.Mesh>({} as THREE.Mesh);
   const color = Colors[node.props.category as ProgramCategory];
 
@@ -32,33 +35,41 @@ export default function PolygonMesh(props: ChildCubeProps) {
     verticesRaw.push(x.z);
   })
   const vertices = new Float32Array(verticesRaw);
-
-  console.log('vertices: ' + vertices.length)
-
-  // const indeces = earclip(perimeterPositions.map(x=> new THREE.Vector3(x.x, x.y, x.z)));
-  // const floatIndeces = new Float32Array(indeces);
-
-  // console.log('indices: ' + indeces.length)
-
-  // const vertices = perimeterPositions.map(x => new THREE.Vector3( x.x, x.y, x.z);
-
   const normalVecs = [] as THREE.Vector3[];
   perimeterPositions.forEach(x => normalVecs.push(new THREE.Vector3(0, 1, 0)));
 
-  const orderedPerimeterPositions = getSortedPerimeterCells(perimeterPositions).map(x=> {return {x: x.x, y: x.z, z: x.y} as Vec3});
+  //handles converting to XY
+  const converted = positions.map(x=> {
+    return {x: x.x, y: x.z, z: x.y} as Vec3});
 
+   const expandedGrid =  makeExpandedGrid(converted);
+  const perimeterGraph: Graph = {};
+  expandedGrid.forEach((x) => {
+      const newPos = { x: x.x, y: x.y, z: x.z } as Vec3
+      const graphNode = {
+          node: {},
+          connectivity: 0,
+          position: newPos,
+          active: false,
+      } as GraphNode;
+      perimeterGraph[vec3ToArrayString(newPos)] = graphNode;
+  })
+  const boundaryPerimeterCells = getPerimeterCellsManually(perimeterGraph).map(x=> {
+    return {x: x.position.x, y: x.position.y, z: x.position.z} as Vec3});
+
+ const orderedPerimeterPositions = getSortedPerimeterCells(boundaryPerimeterCells).map(x=> {return {x: x.x, y: x.z, z: x.y} as Vec3});
+ //const orderedPerimeterPositions = boundaryPerimeterCells.map(x=> {return {x: x.x, y: x.z, z: x.y} as Vec3});
   const computedNormals = [] as number[];
   normalVecs.forEach(x => {
     computedNormals.push(x.x)
-    computedNormals.push(x.y);
+    computedNormals.push(x.y)
     computedNormals.push(x.z);
   });
+
   const normals = new Float32Array(computedNormals);
+ // console.log('normals: ' + computedNormals.length)
 
-
-  console.log('normals: ' + computedNormals.length)
-
-  console.log('---')
+  //console.log('---')
 
 
   return (
@@ -67,13 +78,27 @@ export default function PolygonMesh(props: ChildCubeProps) {
         if (i < orderedPerimeterPositions.length - 1) {
           const start = orderedPerimeterPositions[i];
           const end = orderedPerimeterPositions[i + 1];
-          return (<Line points={[...vecToArray(start), ...vecToArray(end)]} lineWidth={4} color={color} />)
-        }
-        else {
-          return (<Line points={[[0, 0, 0], [5, 5, 5]]} lineWidth={4} color={'red'} />)
+          const upPos = { x: x.x, y: x.y + 0.25, z: x.z };
+          const updatedArray = vecToArray(upPos) as any;
+          const swapped = { x: start.x, y: start.z, z: start.y };
+          const connect = getNeighborCount(swapped, perimeterGraph);
+
+          return (
+          <>
+          <Line points={[...vecToArray(start), ...vecToArray(end)]} lineWidth={4} color={color} />
+          <Text position={updatedArray} color={'black'}
+                        fontSize={0.25}
+                        rotation-x={-Math.PI / 2}
+                    >
+                      {`${connect}`}
+                       {/* {`${updatedArray[0]}, ${updatedArray[2]}`} */}
+                    </Text> 
+          </>
+          )
         }
       })
-      }
+      
+    }
     </>
   )
 

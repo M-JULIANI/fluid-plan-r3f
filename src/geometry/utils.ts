@@ -21,7 +21,8 @@ export const stringArrayToVec3 = (a: string): Vec3 => {
 
 export const vec3ToArrayString = (vec: Vec3): string =>{
     const array = vecToArray(vec);
-    return array.join(',');
+    const out = array.join(',');
+    return out;
 }
 
 export const stringToVec3 = (string: string): Vec3 =>{
@@ -65,7 +66,7 @@ export const drawPoints = async(ctx: CanvasRenderingContext2D, grid: Point[][], 
 
 export const makeImagesOfClusters = (clusterNodeInfo: NodePositionInfo[], size: number) => {
     const positions = clusterNodeInfo.map((nodeInfo) => {
-        return makeImages(nodeInfo.node, nodeInfo.perimeterPositions, size);
+        return makeImages(nodeInfo.node, nodeInfo.positions, size);
     });
 
     return positions;

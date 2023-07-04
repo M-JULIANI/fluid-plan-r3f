@@ -10,12 +10,9 @@ enum Direction {
 }
 
 export const getSortedPerimeterCells = (perimeterCells: Vec3[]) => {
-    console.log('input: ')
-    console.log(perimeterCells)
-
     const perimeterGraph: Graph = {};
     perimeterCells.forEach((x) => {
-        const newPos = { x: x.x, y: x.z, z: x.y } as Vec3
+        const newPos = { x: x.x, y: x.y, z: x.z } as Vec3
         const graphNode = {
             node: {},
             connectivity: 0,
@@ -27,10 +24,6 @@ export const getSortedPerimeterCells = (perimeterCells: Vec3[]) => {
 
 
     const startingNode = Object.values(perimeterGraph).sort((a, b) => a.position.y - b.position.y)[0];
-    console.log('all: ')
-    console.log(Object.values(perimeterGraph).map(x => x.position.y))
-    console.log('selected: ' + startingNode.position.y)
-
     let output = [] as Vec3[];
     let found = true;
     let currentNode = startingNode;
@@ -44,10 +37,6 @@ export const getSortedPerimeterCells = (perimeterCells: Vec3[]) => {
         }
         c++;
     }
-
-    console.log('output: ')
-    console.log(output)
-
     return output;
 }
 
@@ -99,4 +88,26 @@ const getNeighbor = (pos: Vec3, graph: Graph, direction: Direction): { exists: b
     }
 
     return { exists: false, position: neighborPos }
+}
+
+export const getPerimeterCellsManually = (locGraph: Graph, cellSize = 1): GraphNode[] => {
+    return Object.values(locGraph).filter(cell => getNeighborCount(cell.position, locGraph, cellSize) < 8)
+}
+
+export const getNeighborCount = (pos: Vec3, graph: Graph, size = 1) => {
+    const { x, y, z } = pos;
+    let count = 0;
+    for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+            if (i === 0 && j === 0)
+                continue;
+
+            const neighborPos = { x: x + (i * size), y: y + (j * size), z: z } as Vec3;
+            const exists = graph[vec3ToArrayString(neighborPos)];
+            if (exists && !exists.active) {
+                count++;
+            }
+        }
+    }
+    return count;
 }
