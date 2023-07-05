@@ -47,9 +47,8 @@ export interface SidebarProps extends EditorProps {
 }
 
 export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
+
     const { nodeInfo } = props;
-    // console.log('making use of ndoeInfo props at sidebar')
-    // console.log(nodeInfo)
     const [expanded, setExpanded] = React.useState<string | false>(false);
     const [images, setImages] = React.useState<{ [k: string]: string }>({});
    // const [rendered, setRendered] = React.useState<boolean>(false);

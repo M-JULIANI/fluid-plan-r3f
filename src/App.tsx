@@ -8,22 +8,10 @@ import GuideCube from './threeComponents/GuideCube';
 import { useRefineState, useUpdateState } from './state/hooks';
 import { Node } from 'schema/types';
 import { ProgramTree } from './mock/ProgramTree';
-import { makeNode } from './schema/make';
-import { TaggedUpdater, Updater } from 'state/types';
 import { recomputeGraph } from './graph/graph';
 import { NodePositionInfo } from 'graph/types';
-// import { clone } from './state/ops';
 import ChildCube from './threeComponents/ChildCube';
-import { clone } from 'lodash';
-import { SmallTree } from './mock/SmallTree';
-import { TwoProgTree } from './mock/TwoProgTree';
 import { CameraViewMode, SpaceRepresentation, DisplaySettings } from './canvas/TopMenu';
-import { NodeSettings } from './canvas/SidebarMenu';
-import { Vec3 } from './geometry/types';
-import alphaShape from 'alpha-shape';
-import { getPointCollectionWidthHeight, makeAllPointsFromNodes } from './geometry/grid';
-import { createImageOfGrid, vecToArray } from './geometry/utils';
-import { Shape } from 'three';
 import PolygonMesh from './threeComponents/PolygonMesh';
 
 const positionTop = new THREE.Vector3(0, 100, 0);
@@ -79,7 +67,6 @@ const App = () => {
     //initialize clusters 
     useEffect(() => {
         const clusterInfo = recomputeGraph(state)
-       // console.log(clusterInfo)
         setClusterState(clusterInfo);
     }, []);
     ;
@@ -87,13 +74,7 @@ const App = () => {
     const orbitEnabled = viewMode === CameraViewMode.TwoD ? false : true;
     //reactivity to 'guide cubes'
     useEffect(() => {
-
-        //    console.log(state)
-      //  console.log(state)
         const clusterInfo = recomputeGraph(state)
-      //  console.log('recompute cluster: ')
-      //  console.log(clusterInfo)
-        //    const recomputedNode = recomputeTreeClusters(state, clusterInfo)
         setClusterState(clusterInfo);
     }, [state])
 
@@ -108,7 +89,7 @@ const App = () => {
             <Canvas
                 orthographic={true}
                 camera={cameraSettings2D}>
-                {orbitEnabled ? <OrbitControls makeDefault /> : null}
+                 {orbitEnabled ? <OrbitControls makeDefault /> : null}
 
                 <Camera position={cameraPosition} />
                 {/* <Stats /> */}

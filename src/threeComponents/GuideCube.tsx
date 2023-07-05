@@ -74,7 +74,7 @@ export default function GuideCube(props: GuideCubeProps) {
      const moved = [position[0], 1, position[2]] as Vector3
     return (
         <>
-            <mesh ref={cube} position={moved} scale={isActive ? 0.75 : 0.33} onPointerOver={() => setIsHovered(true)} onPointerUp={() => setIsHovered(false)}>
+            <mesh ref={cube} position={moved} scale={isActive ? 1.0 : 0.33} onPointerEnter={()=>setIsHovered(true)} onPointerUp={() => setIsHovered(false)}>
                 <boxGeometry />
                 <meshStandardMaterial color={isActive ? 'lightgray' : 'gray'} />
             </mesh>

@@ -52,14 +52,13 @@ export default function TopMenu<TopMenuProps>(props: TopMenuProps) {
         spaceRenderMode,
         updateSpaceRenderMode } = spaceRepresentationProps;
 
-    const [localCameraViewMode, setLocalCameraViewMode] = React.useState<CameraViewMode>(cameraViewMode);
-    const [localSpaceRenderMode, setLocalSpaceRenderMode] = React.useState<SpaceRepresentation>(spaceRenderMode);
-
+    const [localCameraViewMode, setLocalCameraViewMode] = React.useState<CameraViewMode>(cameraViewMode || CameraViewMode.TwoD);
+    const [localSpaceRenderMode, setLocalSpaceRenderMode] = React.useState<SpaceRepresentation>(spaceRenderMode || SpaceRepresentation.Cell);
 
     //flipped camera icon
     const getCameraViewModeIcon = (viewMode: CameraViewMode) => viewMode === CameraViewMode.TwoD
         ? (<TwoHalfDIcon />)
-        : (<TwodIcon />)
+        : (< TwodIcon/>)
     const [viewModeIcon, setViewModeIcon] =
         React.useState(getCameraViewModeIcon(localCameraViewMode));
 
@@ -72,22 +71,28 @@ export default function TopMenu<TopMenuProps>(props: TopMenuProps) {
     const [spaceRepIcon, setSpaceRepIcon] =
         React.useState(getSpaceRepresentationIcon(localSpaceRenderMode));
 
-    const handleViewModeChange = () => {
-        //update local state
-        setLocalCameraViewMode(mode => mode === CameraViewMode.TwoHalfD ? CameraViewMode.TwoD : CameraViewMode.TwoHalfD);
-        //update icon
-        setViewModeIcon(getCameraViewModeIcon(localCameraViewMode));
-        //send udpates upstream
-        updateCameraViewMode(localCameraViewMode);
-    }
-
-    const handleSpaceRenderMode = () => {
-        //update local state
-        setLocalSpaceRenderMode(rep => rep === SpaceRepresentation.Cell ? SpaceRepresentation.Polygon : SpaceRepresentation.Cell)
+    React.useEffect(() => {
         //update icon
         setSpaceRepIcon(getSpaceRepresentationIcon(localSpaceRenderMode));
         //send updates upstream
         updateSpaceRenderMode(localSpaceRenderMode);
+    }, [localSpaceRenderMode])
+
+    React.useEffect(() => {
+        //update icon
+        setViewModeIcon(getCameraViewModeIcon(localCameraViewMode));
+        //send udpates upstream
+        updateCameraViewMode(localCameraViewMode);
+    }, [localCameraViewMode])
+
+    const handleViewModeChange = () => {
+        //update local state
+        setLocalCameraViewMode(mode => mode === CameraViewMode.TwoHalfD ? CameraViewMode.TwoD : CameraViewMode.TwoHalfD);
+    }
+
+    const handleSpaceRenderMode = () => {
+        //update local state
+        setLocalSpaceRenderMode(rep => rep === SpaceRepresentation.Cell ? SpaceRepresentation.Polygon : SpaceRepresentation.Cell);
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -104,11 +109,11 @@ export default function TopMenu<TopMenuProps>(props: TopMenuProps) {
         <Stack direction={"row"} spacing={'10px'} padding={'10px'}>
             <Button variant="contained" onClick={handleViewModeChange}>
                 {viewModeIcon}
-                {localCameraViewMode === CameraViewMode.TwoD ? 'Plan' : 'Axon'}
+                {localCameraViewMode === CameraViewMode.TwoD ? 'Axon' : 'Plan'}
             </Button>
             <Button variant="contained" onClick={handleSpaceRenderMode}>
                 {spaceRepIcon}
-                {localSpaceRenderMode === SpaceRepresentation.Cell ? 'Voxel' : 'Polygon'}
+                {localSpaceRenderMode === SpaceRepresentation.Cell ? 'Polygon' : 'Voxel'}
             </Button>
         </Stack>
 
