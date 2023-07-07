@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/c
 import invert from "lodash/invert";
 import mean from "lodash/mean";
 import { programTypeCategories } from "../constants/program";
+import { Box } from "@mui/system";
 
 
 const hot1 = "#77312f";
@@ -64,9 +65,9 @@ const opacityScale = scaleLinear<number>({
     domain: [0, colorMax]
 });
 
-export type HeatmapProps = {
-    width: number;
-    height: number;
+ type HeatmapProps = {
+    widt?: number;
+    height?: number;
     adjacencyBasket: AdjacencyBasket;
     margin?: { top: number; right: number; bottom: number; left: number };
     separation?: number;
@@ -117,44 +118,71 @@ const getCellStyle = (adjacencyType: AdjacencyType): CSSProperties => {
     };
 };
 
-export const AdjacencyTable = ({ basket }: AdjacencyBasket) => (
-    <Table>
-        <TableHead>
-            <TableRow>
-                <TableCell />
-                {Object.values(basket).map(x=> (
-                    <TableCell key={x} className={colTypeStyle}>     
-                            <strong className={programTypeStyle}>{programTypeNames[x]}</strong>
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-        <TableBody>
-            {Object.values(basket).map(x => (
-                <TableRow key={x}>
-                    <TableCell component="th" className={rowTypeStyle}>
- 
-                            <strong className={programTypeStyle}>{programTypeNames[x]}</strong>
-                    </TableCell>
-                    {Object.values(x).map(y => {
-                        const num = y as number ?? 0;
-                        const key = JSON.stringify([x, num]);
-                        const distances = Math.abs(x -num);
-                       // const meanDistance = Math.round(mean(distances))
-                       const adjacency = distances <= 10 
-                       ? AdjacencyType.Adjacent
-                       : distances<=20 
-                       ? AdjacencyType.Near 
-                       : AdjacencyType.NotConnected; 
+export function AdjacencyTableAlt({ adjacencyBasket }: HeatmapProps) {
 
-                        return (
-                            <TableCell key={key} style={getCellStyle(adjacency)} align="center">
-                                {isNaN(distances) ? '-' : distances}
+    console.log('regular: ')
+    console.log(programTypeCategories)
+    console.log('inverted: ')
+    console.log(programTypeNames)
+
+    console.log('basket: ')
+    console.log(adjacencyBasket)
+
+    console.log('sim:')
+    Object.keys(adjacencyBasket).forEach((x, i) => {
+        console.log('key: ' + x)
+        Object.keys(x).forEach((y, j) => {
+            console.log('x: ' + x + ', j: ' + y)
+            console.log(adjacencyBasket[x][y])
+        });
+
+    });
+
+    return (
+        <Box sx={{
+            width: '80%', maxWidth: '80%',
+            display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+        }}>
+            <Table sx={{width: '80%', maxWidth: '80%', mr: '100px', ml: '100px'}}>
+                <TableHead>
+                    <TableRow>
+                        <TableCell />
+                        {Object.keys(programTypeCategories).map((x, i) => (
+                            <TableCell key={i} className={colTypeStyle}>
+                                <strong className={programTypeStyle}>{programTypeCategories[x]}</strong>
                             </TableCell>
-                        );
-                    })}
-                </TableRow>
-            ))}
-        </TableBody>
-    </Table>
-);
+                        ))}
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {Object.values(adjacencyBasket).map((category, i) => (
+                        <TableRow key={i}>
+                                <TableCell className={rowTypeStyle}>
+                                    <strong className={programTypeStyle}>{Object.keys(category)[i]}</strong>
+                                </TableCell>
+                            {Object.values(category).map(y => {
+                                const num = y as number ?? 0;
+                                const key = JSON.stringify([category, num]);
+                                const distances = Math.abs(20 - num);
+                                // const meanDistance = Math.round(mean(distances))
+                                const adjacency = distances <= 10
+                                    ? AdjacencyType.Adjacent
+                                    : distances <= 20
+                                        ? AdjacencyType.Near
+                                        : AdjacencyType.NotConnected;
+
+                                return (
+                                    <TableCell key={key} style={getCellStyle(adjacency)} align="center">
+                                        {isNaN(distances) ? `${category}` : distances}
+                                    </TableCell>
+                                );
+                            })}
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </Box>
+    );
+};

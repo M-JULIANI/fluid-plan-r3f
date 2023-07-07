@@ -11,7 +11,7 @@ export type AdjacencyBasket = {
     };
 }
 
-export declare enum AdjacencyType {
+export enum AdjacencyType {
     Adjacent = "Adjacent",
     Near = "Near",
     NotConnected = "NotConnected",

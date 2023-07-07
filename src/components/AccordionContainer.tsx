@@ -27,7 +27,7 @@ import AdjacencyMatrix from './AdjacencyMatrix';
 import { ParentSize } from '@visx/responsive';
 import { useEffect } from 'react';
 import { adjacencies } from '../mock/ProgramTreeAdjacencies';
-import { AdjacencyTable } from './AdjacencyMatrixAlt';
+import { AdjacencyTableAlt } from './AdjacencyMatrixAlt';
 
 export default function AccordionContainer<SidebarProps>(props: SidebarProps) {
 
@@ -46,20 +46,24 @@ export default function AccordionContainer<SidebarProps>(props: SidebarProps) {
     return (
         <>
             <Accordion expanded={expanded === 'panelAccordion'}
-             onChange={handleChange('panelAccordion')}>
+                onChange={handleChange('panelAccordion')}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panelAccordion-content"
                     id="panelAccordion-header-nested"
                 >
-                    <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                    <Typography sx={{ width: '33%', flexShrink: 0, fontFamily: 'sans-serif', fontVariant: 'h3'}}>
                         Adjacencies
                     </Typography>
                     <Typography sx={{ color: 'text.secondary' }}> </Typography>
                 </AccordionSummary>
-                <AccordionDetails>
-                {/* {expanded  && <AdjacencyMatrix width={300} height={500} adjacencyBasket={adjacencyBasket} />} */}
-                {/* {expanded  && <AdjacencyTable basket={adjacencyBasket} />} */}
+                <AccordionDetails sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
+                    {expanded && <AdjacencyTableAlt adjacencyBasket={adjacencyBasket} />}
+                    {/* {expanded  && <AdjacencyTable basket={adjacencyBasket} />} */}
                 </AccordionDetails>
             </Accordion>
         </>

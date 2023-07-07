@@ -86,8 +86,12 @@ function AdjacencyMatrix({
     const xMax = size;
     const yMax = height - margin.bottom - margin.top;
 
+    console.log('basket: ')
+    console.log(adjacencyBasket)
+
+   // adjacencyBasket
     const keys = Object.keys(adjacencyBasket);
-    const binWidth = xMax / keys.length;
+    const binWidth = xMax / (keys.length *3);
     const binHeight = yMax / bucketSizeMax;
 
     xScale.range([0, xMax]);

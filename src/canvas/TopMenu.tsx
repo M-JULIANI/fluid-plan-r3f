@@ -111,7 +111,7 @@ export default function TopMenu<TopMenuProps>(props: TopMenuProps) {
                 {viewModeIcon}
                 {localCameraViewMode === CameraViewMode.TwoD ? 'Axon' : 'Plan'}
             </Button>
-            <Button variant="contained" onClick={handleSpaceRenderMode}>
+            <Button variant="contained" onClick={handleSpaceRenderMode} style={{fontFamily: 'sans-serif'}}>
                 {spaceRepIcon}
                 {localSpaceRenderMode === SpaceRepresentation.Cell ? 'Polygon' : 'Voxel'}
             </Button>

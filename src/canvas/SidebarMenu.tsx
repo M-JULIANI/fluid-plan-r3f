@@ -3,7 +3,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Container, keyframes } from '@mui/material';
+import { Chip, Container, keyframes } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
@@ -32,6 +32,9 @@ import { EditorProps } from './Editor';
 import { NodePositionInfo } from 'graph/types';
 import { makeImagesOfClusters } from '../geometry/utils';
 import { Stack } from '@mui/material';
+import { Colors, lightenColor } from '../constants/colors';
+import { ProgramCategory } from '../constants/program';
+import { fontFamily, fontWeight } from '@mui/system';
 
 const minDrawerWidth = 240;
 const defaultWidth = 420;
@@ -90,7 +93,9 @@ export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
         >
             <TopMenu {...props} />
             <div style={{ backgroundColor: '#EAEAEA' }}>
-                <Toolbar><h3>Fluid Plan</h3></Toolbar>
+                <Toolbar><Typography sx={{ width: '33%', flexShrink: 0, fontFamily: 'sans-serif', fontVariant: 'h1', fontSize: '24px', fontWeight: '200' }}>
+                            Fluid Plan
+                        </Typography></Toolbar>
             </div>
             <Divider />
 
@@ -101,7 +106,7 @@ export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
                         aria-controls="panel1bh-content"
                         id="panel1bh-header"
                     >
-                        <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                        <Typography sx={{ width: '33%', flexShrink: 0, fontFamily: 'sans-serif', fontVariant: 'h2' }}>
                             Metrics
                         </Typography>
                         <Typography sx={{ color: 'text.secondary' }}></Typography>
@@ -110,28 +115,34 @@ export default function SidebarMenu<SidebarProps>(props: SidebarProps) {
                         <AccordionContainer></AccordionContainer>
                     </AccordionDetails>
                 </Accordion>
-                <Accordion expanded={true}>
+                <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel-images-content"
                         id="panel-images-header"
                     >
-                        <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                        <Typography sx={{ width: '33%', flexShrink: 0, fontFamily: 'sans-serif', fontVariant: 'h2'}}>
                             Clusters
                         </Typography>
                         <Typography sx={{ color: 'text.secondary' }}></Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         <Stack direction={"column"} spacing={'10px'} padding={'10px'}>
-                            {Object.keys(images).map(key => {
-                                return <img
+                            {Object.keys(images).map((key, i) => {
+                                return <Stack direction={'row'} spacing={'20px'} paddingBottom={'20px'}>
+                                    <Chip label={nodeInfo[i].node.props.name} sx={{mr: '100px', 
+                                    backgroundColor:`${lightenColor(Colors[nodeInfo[i].node.props.category as ProgramCategory],10)}`,
+                                    fontFamily:'sans-serif',
+                                    '&:hover': {
+                                        backgroundColor: `${lightenColor(Colors[nodeInfo[i].node.props.category as ProgramCategory], -5)}`,
+                                      },}}/>
+                                <img
                                         key={key}
                                         src={images[key]}
                                         alt={'cluster name'}
-                                        style={{ width: '100px', maxHeight: '100', objectFit: 'contain', paddingRight: '10px' }}
+                                        style={{ width: '50px', maxHeight: '50', objectFit: 'contain', paddingRight: '10px'}}
                                     />
-                             
-
+                                </Stack>
                             })}
                         </Stack>
                     </AccordionDetails>

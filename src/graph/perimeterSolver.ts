@@ -23,7 +23,7 @@ export const getSortedPerimeterCells = (perimeterCells: Vec3[]) => {
     })
 
 
-    const startingNode = Object.values(perimeterGraph).sort((a, b) => a.position.y - b.position.y)[0];
+    const startingNode = Object.values(perimeterGraph).sort((a, b) => ((a.position.y - b.position.y)* 2) + (a.position.x - b.position.x))[0];
     let output = [] as Vec3[];
     let found = true;
     let currentNode = startingNode;

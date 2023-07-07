@@ -40,6 +40,7 @@ export const createImageOfGrid = (grid: Point[][], color: string, size: number) 
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, width + size, height + size);
         drawPoints(ctx, grid, size, color)
+
     }
     return hiddenCanvas.toDataURL('image/png');
 }

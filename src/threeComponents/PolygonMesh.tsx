@@ -90,7 +90,7 @@ export default function PolygonMesh(props: ChildCubeProps) {
                         fontSize={0.25}
                         rotation-x={-Math.PI / 2}
                     >
-                      {`${connect}`}
+                      {`${i}`}
                        {/* {`${updatedArray[0]}, ${updatedArray[2]}`} */}
                     </Text> 
           </>
