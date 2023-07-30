@@ -1,25 +1,32 @@
 import React, { SetStateAction } from 'react';
-import SidebarMenu, { NodeSettings } from './SidebarMenu';
+import { NodeSettings, SidebarMenu } from './SidebarMenu';
 import { Node } from '../schema/types';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Container, keyframes } from '@mui/material';
-import TopMenu, { DisplaySettings } from './TopMenu';
+import { TopMenu, DisplaySettings } from './TopMenu';
 import { CameraViewMode } from './TopMenu';
 import { NodePositionInfo } from 'graph/types';
+import { TaggedUpdater } from 'state/types';
 
-export interface EditorProps extends JSX.IntrinsicAttributes{
+export type EditorProps ={
     nodeSettings: NodeSettings,
     displaySettings: DisplaySettings,
-    nodeInfo: NodePositionInfo[]
+    nodeInfo: NodePositionInfo[],
+    setAdjacencyNodes: React.Dispatch<SetStateAction<string[]>>,
+    // setNodeInfo: React.Dispatch<SetStateAction<NodePositionInfo[]>>
 }
 
-export function Editor<EditorProps>(props: EditorProps) {
+export const Editor: React.FC<EditorProps> = ({ nodeInfo, nodeSettings, displaySettings, setAdjacencyNodes }) =>{
     return (
         <>
             <Container sx={{ display: 'flex' }}>
                 <CssBaseline />
                 {/* {cube} */}
-                <SidebarMenu {...props} />
+                <SidebarMenu 
+                nodeInfo={nodeInfo} 
+                nodeSettings={nodeSettings} 
+                displaySettings={displaySettings}
+                setAffectedNodes={setAdjacencyNodes} />
             </Container>
         </>
     )

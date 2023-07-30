@@ -13,7 +13,6 @@ const minDrawerWidth = 220;
 const defaultWidth = 220;
 
 
-
 export enum CameraViewMode {
     TwoD = '2D',
     TwoHalfD = '2.5D',
@@ -36,15 +35,16 @@ export type DisplaySettings = {
     }
 }
 
-export type TopMenuProps = Partial<SidebarProps>
+export type TopMenuProps = {
+    displaySettings: DisplaySettings
+}
 
-export default function TopMenu<TopMenuProps>(props: TopMenuProps) {
-    const { displaySettings } = props;
-
+export const TopMenu: React.FC<TopMenuProps> = ({displaySettings}) => {
+    
     const { cameraViewProps,
         spaceRepresentationProps } = displaySettings;
 
-    const { cameraViewMode,
+    const { viewMode,
         updateCameraViewMode
     } = cameraViewProps;
 
@@ -52,7 +52,7 @@ export default function TopMenu<TopMenuProps>(props: TopMenuProps) {
         spaceRenderMode,
         updateSpaceRenderMode } = spaceRepresentationProps;
 
-    const [localCameraViewMode, setLocalCameraViewMode] = React.useState<CameraViewMode>(cameraViewMode || CameraViewMode.TwoD);
+    const [localCameraViewMode, setLocalCameraViewMode] = React.useState<CameraViewMode>(viewMode || CameraViewMode.TwoD);
     const [localSpaceRenderMode, setLocalSpaceRenderMode] = React.useState<SpaceRepresentation>(spaceRenderMode || SpaceRepresentation.Cell);
 
     //flipped camera icon

@@ -9,6 +9,7 @@ export const ProgramTree = {
             "props": {
                 "category": "meeting",
                 "name": "small meeting",
+                "displayName": "room1",
                 "locked": true,
                 "length": 8,
                 "width": 4,
@@ -22,6 +23,7 @@ export const ProgramTree = {
             "props": {
                 "category": "event",
                 "name": "medium meeting",
+                "displayName": "room2",
                 "locked": false,
                 "length": 5,
                 "width": 4,
@@ -35,6 +37,7 @@ export const ProgramTree = {
             "props": {
                 "category": "meeting",
                 "name": "large meeting",
+                "displayName": "room3",
                 "locked": false,
                 "length": 8,
                 "width": 6,
@@ -48,6 +51,7 @@ export const ProgramTree = {
             "props": {
                 "category": "support",
                 "name": "medium core",
+                "displayName": "room4",
                 "locked": true,
                 "length": 7,
                 "width": 4,
@@ -60,7 +64,8 @@ export const ProgramTree = {
             "id": "f5dd5706-f93e-4b7f-b9c0-72ad11a1eeed",
             "props": {
                 "category": "core",
-                "name": "medium core",
+                "name": "medium core 2",
+                "displayName": "room5",
                 "locked": true,
                 "length": 8,
                 "width": 4,
@@ -74,6 +79,7 @@ export const ProgramTree = {
             "props": {
                 "category": "amenity",
                 "name": "lobby",
+                "displayName": "room6",
                 "locked": false,
                 "length": 5,
                 "width": 5,
@@ -87,6 +93,7 @@ export const ProgramTree = {
             "props": {
                 "category": "office",
                 "name": "worksation",
+                "displayName": "room7",
                 "locked": false,
                 "length": 4,
                 "width": 6,
@@ -100,6 +107,7 @@ export const ProgramTree = {
             "props": {
                 "category": "office",
                 "name": "worksation",
+                "displayName": "room8",
                 "locked": false,
                 "length": 6,
                 "width": 7,

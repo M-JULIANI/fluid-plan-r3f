@@ -1,10 +1,11 @@
 import { Suspense, useEffect, useRef, useState, SetStateAction } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Stats, OrbitControls, useCamera, OrbitControlsProps } from "@react-three/drei";
+import { Stats, OrbitControls, useCamera, OrbitControlsProps, Line } from "@react-three/drei";
 import * as THREE from "three";
 import "./styles.css";
 import { Editor, EditorProps } from './canvas/Editor'
 import GuideCube from './threeComponents/GuideCube';
+import HighlightedPolygon from './threeComponents/HighlightedPolygon';
 import { useRefineState, useUpdateState } from './state/hooks';
 import { Node } from 'schema/types';
 import { ProgramTree } from './mock/ProgramTree';
@@ -13,8 +14,9 @@ import { NodePositionInfo } from 'graph/types';
 import ChildCube from './threeComponents/ChildCube';
 import { CameraViewMode, SpaceRepresentation, DisplaySettings } from './canvas/TopMenu';
 import PolygonMesh from './threeComponents/PolygonMesh';
-import CameraControls from 'CameraControls';
 import { Euler, OrthographicCamera } from 'three';
+import { NodeSettings } from 'canvas/SidebarMenu';
+import { vecToArray } from './geometry/utils';
 
 const positionTop = new THREE.Vector3(0, 100, 0);
 const positionAxon = new THREE.Vector3(50, 100, 50);
@@ -42,7 +44,7 @@ function Camera(props: CameraProps) {
     three.camera.position.set(position.x, position.y, position.z);
     // console.log('euler: ')
     // console.log(three.camera)
-     three.camera.lookAt(0, 0, 0);
+    three.camera.lookAt(0, 0, 0);
     //three.camera.setRotationFromEuler(original);
     useEffect(() => {
 
@@ -74,15 +76,28 @@ const App = () => {
     // const [state, updateState] = useUpdateState(root);
     const [state, updateState] = useState(root);
     const [viewMode, setViewMode] = useState<CameraViewMode>(CameraViewMode.TwoD);
-    const [spaceRepState, setSpaceRepState] = useState<SpaceRepresentation>(SpaceRepresentation.Cell);
+    const [spaceRepState, setSpaceRepState] = useState<SpaceRepresentation>(SpaceRepresentation.Polygon);
     const [clusterState, setClusterState] = useUpdateState([] as NodePositionInfo[]);
-
-    const editorProps = {
-        nodeSettings: {
-            node: state,
-            updateNode: updateState
+    const [adjacencyNodes, setAdjacencyNodes] = useState<string[]>(['']);
+    const [editorProps, setEditorProps] = useState({} as any);
+    const [nodeSettings, setNodeSettings] = useState({ node: state, updateNode: updateState } as NodeSettings);
+    const [displaySettings, setDisplaySettings] = useState({
+        cameraViewProps: {
+            viewMode: viewMode,
+            updateCameraViewMode: setViewMode
         },
-        displaySettings: {
+        spaceRepresentationProps: {
+            spaceRenderMode: spaceRepState,
+            updateSpaceRenderMode: setSpaceRepState,
+        }
+    } as DisplaySettings);
+
+    useEffect(() => {
+        setNodeSettings({ ...nodeSettings, node: state })
+    }, [state])
+
+    useEffect(() => {
+        setDisplaySettings({
             cameraViewProps: {
                 viewMode: viewMode,
                 updateCameraViewMode: setViewMode
@@ -91,8 +106,8 @@ const App = () => {
                 spaceRenderMode: spaceRepState,
                 updateSpaceRenderMode: setSpaceRepState,
             }
-        }
-    };
+        })
+    }, [viewMode, spaceRepState]);
 
     //initialize clusters 
     useEffect(() => {
@@ -101,17 +116,13 @@ const App = () => {
     }, []);
     ;
     const cameraPosition = viewMode === CameraViewMode.TwoD ? positionTop : positionAxon;
- const orbitEnabled = viewMode === CameraViewMode.TwoD ? false : true;
+    const orbitEnabled = viewMode === CameraViewMode.TwoD ? false : true;
+
     //reactivity to 'guide cubes'
     useEffect(() => {
-        const clusterInfo = recomputeGraph(state)
+        const clusterInfo = recomputeGraph(state);
         setClusterState(clusterInfo);
     }, [state])
-
-    useEffect(()=>{
-        controlsRef?.current?.reset();
-        console.log('reset')
-    }, [viewMode])
 
     const sceneRef = useRef<THREE.OrthographicCamera>({} as THREE.OrthographicCamera);
     const controlsRef = useRef<any>();
@@ -123,17 +134,29 @@ const App = () => {
                 width: "100vw",
             }}
         >
-            <Editor {...editorProps} nodeInfo={clusterState} />
+            <Editor {...editorProps}
+                nodeInfo={clusterState}
+                nodeSettings={nodeSettings}
+                displaySettings={displaySettings}
+                // setNodeInfo={setClusterState}
+                //   adjacencyNodes={adjacencyNodes}
+                setAdjacencyNodes={setAdjacencyNodes} />
             <Canvas
                 orthographic={true}
                 camera={cameraSettings2D(cameraPosition)}>
-                {orbitEnabled ? <OrbitControls ref={controlsRef} enablePan enableRotate={false}/> :  null}
+                {orbitEnabled ? <OrbitControls ref={controlsRef} enablePan enableRotate={false} /> : null}
                 <Camera position={cameraPosition} sceneRef={sceneRef} />
                 {/* <Stats /> */}
 
                 <Suspense fallback={null}>
                     {/* <scene ref={sceneRef}> */}
-                    <Scene root={state} updateRoot={updateState} clusterNode={clusterState} representation={spaceRepState} />
+                    <Scene
+                        root={state}
+                        updateRoot={updateState}
+                        clusterNode={clusterState}
+                        representation={spaceRepState}
+                        adjacencyNodes={adjacencyNodes}
+                    />
                     {/* </scene> */}
                 </Suspense>
             </Canvas>
@@ -146,7 +169,8 @@ type SceneProps = {
     // updateRoot: TaggedUpdater<Node>,
     updateRoot: React.Dispatch<SetStateAction<Node>>,
     clusterNode: NodePositionInfo[],
-    representation: SpaceRepresentation
+    representation: SpaceRepresentation,
+    adjacencyNodes: string[],
 
 }
 const Scene: React.FC<SceneProps> = (props: SceneProps) => {
@@ -154,8 +178,15 @@ const Scene: React.FC<SceneProps> = (props: SceneProps) => {
         root,
         updateRoot,
         clusterNode,
-        representation
+        representation,
+        adjacencyNodes
     } = props;
+
+    const affectedNodes = clusterNode.filter(c => adjacencyNodes?.includes(c.node.props.displayName));
+
+    useEffect(()=>{
+        console.log(affectedNodes.map(x=> x.node.props.position))
+    }, [affectedNodes])
 
     return (
         <>
@@ -175,6 +206,17 @@ const Scene: React.FC<SceneProps> = (props: SceneProps) => {
                     return <PolygonMesh key={node.node.id} id="polygonMesh" node={node.node} positions={node.positions} perimeterPositions={node.perimeterPositions} />
                 })
             }
+            {affectedNodes && affectedNodes?.map((node) => {
+                return <HighlightedPolygon key={node.node.id} id="adjacency-outline"
+                    node={node.node}
+                    positions={node.positions}
+                    perimeterPositions={node.perimeterPositions}
+                    providedLineWidth={4} />
+            })
+            }
+            {affectedNodes.length === 2 && <Line points={[ Array.isArray(affectedNodes?.[0]?.node.props.position) ? affectedNodes?.[0]?.node.props.position : vecToArray(affectedNodes?.[0]?.node?.props?.position),
+            Array.isArray(affectedNodes?.[1]?.node?.props?.position) ? affectedNodes[1].node.props.position : vecToArray(affectedNodes[1]?.node?.props?.position)]} color={'black'} lineWidth={2}/>}
+
         </>
     );
 };

@@ -28,44 +28,54 @@ import { ParentSize } from '@visx/responsive';
 import { useEffect } from 'react';
 import { adjacencies } from '../mock/ProgramTreeAdjacencies';
 import { AdjacencyTableAlt } from './AdjacencyMatrixAlt';
+import { NodePositionInfo } from 'graph/types';
+import { calculateAdjacencies } from '../adjacency/adjacencies';
 
-export default function AccordionContainer<SidebarProps>(props: SidebarProps) {
+type ContainerProps = {
+    nodeInfo: NodePositionInfo[]
+    width: number,
+    setAffectedNodes: React.Dispatch<React.SetStateAction<string[]>>
+}
 
-    const { node, updateNode } = props;
+export const AdjacencyTableContainer: React.FC<ContainerProps> = ({nodeInfo, width, setAffectedNodes})=> {
 
     const [expanded, setExpanded] = React.useState<string | false>(false);
-    const [animated, setAnimated] = React.useState<boolean>(false);
-
-    const adjacencyBasket = adjacencies;
-
+    const adjacencyBasket = calculateAdjacencies(nodeInfo);
     const handleChange =
         (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
             setExpanded(isExpanded ? panel : false);
         };
 
     return (
-        <>
             <Accordion expanded={expanded === 'panelAccordion'}
-                onChange={handleChange('panelAccordion')}>
+                onChange={handleChange('panelAccordion')}
+                sx={{ width: '100%'}}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panelAccordion-content"
                     id="panelAccordion-header-nested"
+                    sx={{ width: '100%',
+                    display: 'flex',}}
                 >
-                    <Typography sx={{ width: '33%', flexShrink: 0, fontFamily: 'sans-serif', fontVariant: 'h3'}}>
+                    <Typography sx={{ width: '33%', flexShrink: 0, fontFamily: 'sans-serif', fontVariant: 'h3' }}>
                         Adjacencies
                     </Typography>
                     <Typography sx={{ color: 'text.secondary' }}> </Typography>
                 </AccordionSummary>
                 <AccordionDetails sx={{
                     display: 'flex',
+                    width: '100%',
+                    flex: 'flex-grow',
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}>
-                    {expanded && <AdjacencyTableAlt adjacencyBasket={adjacencyBasket} />}
+                    {expanded && <AdjacencyTableAlt 
+                    adjacencyBasket={adjacencyBasket} 
+                    overallWidth={width} 
+                    setAffectedNodes = {setAffectedNodes}
+                    />}
                     {/* {expanded  && <AdjacencyTable basket={adjacencyBasket} />} */}
                 </AccordionDetails>
             </Accordion>
-        </>
     );
 }

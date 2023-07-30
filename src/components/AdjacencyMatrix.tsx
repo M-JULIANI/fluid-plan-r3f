@@ -5,6 +5,7 @@ import { scaleLinear } from "@visx/scale";
 import { HeatmapCircle, HeatmapRect } from "@visx/heatmap";
 import { getSeededRandom } from "@visx/mock-data";
 import { AdjacencyBasket } from "adjacency/adjacencies";
+import {  HeatMapComponent, Inject, Legend, Tooltip, Adaptor } from "@syncfusion/ej2-react-heatmap";
 
 const hot1 = "#77312f";
 const hot2 = "#f33d15";
@@ -69,93 +70,54 @@ export type HeatmapProps = {
 
 const defaultMargin = { top: 100, left: 60, right: 20, bottom: 100 };
 
-function AdjacencyMatrix({
-    width,
-    height,
-    adjacencyBasket,
-    events = true,
-    margin = defaultMargin,
-    separation = 20
-}: HeatmapProps) {
+function AdjacencyMatrix() {
 
-    // bounds
-    const size =
-        width > margin.left + margin.right
-            ? width - margin.left - margin.right - separation
-            : width;
-    const xMax = size;
-    const yMax = height - margin.bottom - margin.top;
 
-    console.log('basket: ')
-    console.log(adjacencyBasket)
 
-   // adjacencyBasket
-    const keys = Object.keys(adjacencyBasket);
-    const binWidth = xMax / (keys.length *3);
-    const binHeight = yMax / bucketSizeMax;
+    let heatmapData : any[] = [
+        [73, 39, 26, 39, 94, 0],
+        [93, 58, 53, 38, 26, 68],
+        [99, 28, 22, 4, 66, 90],
+        [14, 26, 97, 69, 69, 3],
+        [7, 46, 47, 47, 88, 6],
+        [41, 55, 73, 23, 3, 79],
+        [56, 69, 21, 86, 3, 33],
+        [45, 7, 53, 81, 95, 79],
+        [60, 77, 74, 68, 88, 51],
+        [25, 25, 10, 12, 78, 14],
+        [25, 56, 55, 58, 12, 82],
+        [74, 33, 88, 23, 86, 59]
+];
 
-    xScale.range([0, xMax]);
-    yScale.range([yMax, 0]);
-
-    return width < 10 ? null : (
-        <svg width={width} height={height}>
-            <rect
-                x={0}
-                y={0}
-                width={width}
-                height={height}
-                rx={14}
-                fill={background}
-            />
-            <Group top={margin.top} left={margin.left + separation}>
-                <HeatmapRect
-                    data={binData}
-                    xScale={(d) => xScale(d) ?? 0}
-                    yScale={(d) => yScale(d) ?? 0}
-                    colorScale={rectColorScale}
-                    opacityScale={opacityScale}
-                    binWidth={binWidth}
-                    binHeight={binWidth}
-                    gap={2}
-                >
-                    {(heatmap) =>
-                        heatmap.map((heatmapBins) =>
-                            heatmapBins.map((bin) => (
-                                <>
-                                    <text
-                                        transform={`translate(${bin.x}, ${-(binWidth)}) rotate(-90)`}
-                                        fontSize={binWidth}
-                                    >
-                                        {bin.x}
-                                    </text>
-                                    <text
-                                        transform={`translate(${-(binWidth * 5)}, ${bin.y + binWidth})`}
-                                        fontSize={binWidth}>
-                                        {bin.y}
-                                    </text>
-                                    <rect
-                                        key={`heatmap-rect-${bin.row}-${bin.column}`}
-                                        className="visx-heatmap-rect"
-                                        width={bin.width}
-                                        height={bin.height}
-                                        x={bin.x}
-                                        y={bin.y}
-                                        fill={bin.color}
-                                        fillOpacity={bin.opacity}
-                                        onClick={() => {
-                                            if (!events) return;
-                                            const { row, column } = bin;
-                                            alert(JSON.stringify({ row, column, bin: bin.bin }));
-                                        }}
-                                    />
-                                </>
-                            ))
-                        )
-                    }
-                </HeatmapRect>
-            </Group>
-        </svg>
-    );
-}
+    return (<HeatMapComponent
+    titleSettings = { {
+      text: 'Sales Revenue per Employee (in 1000 US$)',
+      textStyle: {
+          size: '15px',
+          fontWeight: '500',
+          fontStyle: 'Normal',
+          fontFamily: 'Segoe UI'
+      }
+  } }
+  xAxis = { {
+      labels: ['Nancy', 'Andrew', 'Janet', 'Margaret', 'Steven',
+  'Michael', 'Robert', 'Laura', 'Anne', 'Paul', 'Karin',   'Mario'],
+  } }
+  yAxis = { {
+      labels: ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'],
+  } }
+  width="400px"
+  height="400px"
+  cellSettings = { {
+      border: {
+          width: 1,
+          radius: 4,
+          color: 'white'
+      }
+  } }
+  dataSource={heatmapData}>
+  <Inject services={[Tooltip]} />
+  </HeatMapComponent> )
+};
 
 export default AdjacencyMatrix;

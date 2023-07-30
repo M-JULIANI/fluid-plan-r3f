@@ -29,20 +29,22 @@ export default function ChildCube(props: ChildCubeProps) {
         <>
             {positions.map((pos, index) => {
                 const array = vecToArray(pos) as any;
-                const upPos = { x: pos.x, y: pos.y + 0.75, z: pos.z };
+                const movedPos = {...pos, y: pos.y - 0.5}
+                const moved = vecToArray(movedPos) as any;
+                const upPos = { x: pos.x, y: pos.y, z: pos.z };
                 const updatedArray = vecToArray(upPos) as any;
                 return <>
-                    <mesh ref={cube} position={array} scale={0.95} key={index}>
+                    <mesh ref={cube} position={moved} scale={0.95} key={index}>
                         <boxGeometry />
                         <meshStandardMaterial color={color} />
                     </mesh>
 
-                    <Text position={updatedArray} color={'black'}
+                    {/* <Text position={updatedArray} color={'black'}
                         fontSize={0.5}
                         rotation-x={-Math.PI / 2}
                     >
                         {(connectivities && connectivities[index]) ? `${connectivities[index]}`: 'u'}
-                    </Text>
+                    </Text> */}
                 </>
             })}
         </>
